@@ -1,0 +1,24 @@
+var express = require('express');
+var nano = require('nano')('https://couchdb-9ee129.smileupps.com/');
+var app = express();
+var filter = nano.db.use('filter');
+
+
+app.get('/', function (req, res) {
+  console.log(req.query.key);
+  filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
+  if (!err) {
+    /*.rows.forEach(function(doc) {
+      console.log(doc.value);
+    });*/
+  	console.log(body);
+   
+  }
+   res.send("Hello World");
+});
+ 
+});
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!');
+});
