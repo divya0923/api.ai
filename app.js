@@ -14,10 +14,11 @@ app.post('/webhook', function (req, res) {
         });
 
         req.on('end', function () {
-            //console.log("params" + jsonString);
+            console.log("params" + JSON.parse(jsonString));
+            postParams = JSON.parse(jsonString);
         });
 
-        postParams = JSON.parse(jsonString);
+        
         console.log(postparams.result.parameters.filterAttributes);
 
     }
