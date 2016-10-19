@@ -5,6 +5,19 @@ var filter = nano.db.use('filter');
 
 app.post('/webhook', function (req, res) {
   //console.log("post param" + req.body.id);
+
+   if (req.method == 'POST') {
+        var jsonString = '';
+
+        req.on('data', function (data) {
+            jsonString += data;
+        });
+
+        req.on('end', function () {
+            console.log("params" + JSON.parse(jsonString));
+        });
+    }
+
   res.contentType('application/json');
   filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
   if (!err) {
