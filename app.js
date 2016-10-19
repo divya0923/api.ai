@@ -4,7 +4,7 @@ var app = express();
 var filter = nano.db.use('filter');
 
 app.post('/webhook', function (req, res) {
-  console.log(req.query.filterAttributes);
+  console.log("post param" + req.body.filterAttributes);
   res.contentType('application/json');
   filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
   if (!err) {
