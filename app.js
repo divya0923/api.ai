@@ -4,8 +4,9 @@ var app = express();
 var filter = nano.db.use('filter');
 
 app.post('/webhook', function (req, res) {
-  //console.log("post param" + req.body.id);
-  var postParams = null;
+  
+  // read request params from post body
+  var postParam = null;
    if (req.method == 'POST') {
         var jsonString = '';
 
@@ -14,25 +15,57 @@ app.post('/webhook', function (req, res) {
         });
 
         req.on('end', function () {
-            console.log("params" + JSON.parse(jsonString).result.parameters.filterAttributes);
+          postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
+          console.log("postParam" + postParam);
         });
     }
 
-  res.contentType('application/json');
+  // query data from couchDB through views  
   filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
   if (!err) {
-    /*.rows.forEach(function(doc) {
-      console.log(doc.value);
-    }); */
-     var response =  {
-        "speech": "test spech",
-        "displayText": "test spech",
-        "source": "apiai-weather-webhook-sample"
+    
+    // get the array of filters from response
+    var filterRows = body.rows;
+    
+    // sort rows based on the request param
+    filterRows.sort(function(a, b) {
+      return parseFloat(a.value[postParam]) - parseFloat(b.value[postParam]);
+    });
+
+    console.log("matching filter model:" +filterRows[0].value.filterModel);
+    
+    // construct response object
+    var response =  {
+      "speech": "Filter matching your query is " + filterRows[0].value.filterModel,
+      "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
+      "source": "apiai-filter-search"
     }
+
+    // post response
+    res.contentType('application/json');
   	res.send(response); 
   }
   }); 
- //res.send("Hello World");
+});
+
+app.get('/test', function(req,res){
+  res.contentType('application/json');
+  filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
+  var attr = "filterMaterialQuality";
+  if (!err) {
+     var filterRows = body.rows;
+     filterRows.sort(function(a, b) {
+        return parseFloat(a.value[attr]) - parseFloat(b.value[attr]);
+     });
+     console.log(filterRows[0].value.filterModel);
+     var response =  {
+        "speech": "Filter matching your query is " + filterRows[0].value.filterModel,
+        "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
+        "source": "apiai-filter-search"
+    }
+    res.send(response); 
+  }
+  }); 
 });
 
 var port = process.env.PORT || 3000;
