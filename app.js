@@ -11,7 +11,12 @@ app.get('/', function (req, res) {
     /*.rows.forEach(function(doc) {
       console.log(doc.value);
     }); */
-  	res.send(body); 
+     var response =  {
+        "speech": "test spech",
+        "displayText": "test spech",
+        "source": "apiai-weather-webhook-sample"
+    }
+  	res.send(response); 
   }
   }); 
  //res.send("Hello World");
