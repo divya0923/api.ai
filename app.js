@@ -5,7 +5,7 @@ var filter = nano.db.use('filter');
 
 app.post('/webhook', function (req, res) {
   //console.log("post param" + req.body.id);
-
+  var postParams = null;
    if (req.method == 'POST') {
         var jsonString = '';
 
@@ -17,6 +17,8 @@ app.post('/webhook', function (req, res) {
             console.log("params" + jsonString);
         });
 
+        postParams = JSON.parse(jsonString);
+        console.log(postparams.parameters.filterAttributes);
 
     }
 
