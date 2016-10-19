@@ -3,7 +3,7 @@ var nano = require('nano')('https://couchdb-9ee129.smileupps.com/');
 var app = express();
 var filter = nano.db.use('filter');
 
-app.get('/', function (req, res) {
+app.post('/webhook', function (req, res) {
   console.log(req.query.key);
   res.contentType('application/json');
   filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
