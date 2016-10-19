@@ -1,11 +1,10 @@
 var express = require('express');
 var nano = require('nano')('https://couchdb-9ee129.smileupps.com/');
 var app = express();
-app.use(express.bodyParser());
 var filter = nano.db.use('filter');
 
 app.post('/webhook', function (req, res) {
-  console.log("post param" + req.body.id);
+  //console.log("post param" + req.body.id);
   res.contentType('application/json');
   filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
   if (!err) {
