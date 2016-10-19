@@ -5,15 +5,16 @@ var filter = nano.db.use('filter');
 
 app.get('/', function (req, res) {
   console.log(req.query.key);
+  res.contentType('application/json');
   filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
   if (!err) {
     /*.rows.forEach(function(doc) {
       console.log(doc.value);
     }); */
-  	console.log(body); 
+  	res.send(body); 
   }
   }); 
- res.send("Hello World");
+ //res.send("Hello World");
 });
 
 var port = process.env.PORT || 3000;
