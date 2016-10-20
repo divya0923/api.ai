@@ -36,7 +36,7 @@ app.post('/webhook', function (req, res) {
     
     // construct response object
     var response =  {
-      "speech": "Filter matching your query is " + filterRows[0].value.filterModel,
+      "speech": "Great, I can help you with that. In this store, " + filterRows[0].value.filterModel + "is the best air filter for " + postParam + "based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel,
       "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
       "source": "apiai-filter-search"
     }
