@@ -3,6 +3,8 @@ var nano = require('nano')('https://couchdb-9ee129.smileupps.com/');
 var app = express();
 var filter = nano.db.use('filter');
 
+app.use('/static', express.static(__dirname + '/public'));
+
 app.post('/webhook', function (req, res) {
   
   // read request params from post body

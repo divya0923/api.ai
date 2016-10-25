@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style>
+	body{
+		background-color : #d6d6c2 !important;
+	}
+
+	.bodyContainer {
+		width: 800px;
+	    border: 0px solid green;
+	    padding: 10px;
+	    margin-left: -160px;
+	    margin-top: 60px;
+	}
+
+	.requestText{
+		margin-bottom : 35px;
+	}
+
+	.bodyTitle {
+		font-size: 40px;
+	    text-align: center;
+	    margin-left: -160px;
+	}
+	</style>
+	<title>API Example</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		var accessToken = "7acca8a04dfd476692691d3b2a28011e";
+		var baseUrl = "https://api.api.ai/v1/";
+		$(document).ready(function() {
+			$("#input").keypress(function(event) {
+				if (event.which == 13) {
+					event.preventDefault();
+					send();
+				}
+			});
+			$("#rec").click(function(event) {
+				switchRecognition();
+			});
+		});
+		var recognition;
+		function startRecognition() {
+			recognition = new webkitSpeechRecognition();
+			recognition.onstart = function(event) {
+				updateRec();
+			};
+			recognition.onresult = function(event) {
+				var text = "";
+			    for (var i = event.resultIndex; i < event.results.length; ++i) {
+			    	text += event.results[i][0].transcript;
+			    }
+			    setInput(text);
+				stopRecognition();
+			};
+			recognition.onend = function() {
+				stopRecognition();
+			};
+			recognition.lang = "en-US";
+			recognition.start();
+		}
+	
+		function stopRecognition() {
+			if (recognition) {
+				recognition.stop();
+				recognition = null;
+			}
+			updateRec();
+		}
+		function switchRecognition() {
+			if (recognition) {
+				stopRecognition();
+			} else {
+				startRecognition();
+			}
+		}
+		function setInput(text) {
+			$("#input").val(text);
+			send();
+		}
+		function updateRec() {
+			$("#rec").text(recognition ? "Stop" : "Speak");
+		}
+		function send() {
+			var text = $("#input").val();
+			$.ajax({
+				type: "POST",
+				url: baseUrl + "query?v=20150910",
+				contentType: "application/json; charset=utf-8",
+				dataType: "json",
+				headers: {
+					"Authorization": "Bearer " + accessToken
+				},
+				data: JSON.stringify({ q: text, lang: "en" }),
+				success: function(data) {
+					setResponse(JSON.stringify(data, undefined, 2));
+				},
+				error: function() {
+					setResponse("Internal Server Error");
+				}
+			});
+			//setResponse("Loading...");
+		}
+		function setResponse(val) {
+			//if(val.result != null)
+			var response = JSON.parse(val);
+			console.log(response);
+			  $("#response").text(response.result.fulfillment.speech);
+		}
+	</script>
+	<style type="text/css">
+		body { width: 500px; margin: 0 auto; text-align: center; margin-top: 20px; }
+		div {  position: absolute; }
+		input { width: 400px; }
+		button { width: 50px; }
+		textarea { width: 100%; }
+	</style>
+</head>
+<body bgcolor="#d6d6c2">
+	<div class="form-group">
+		<span class="bodyTitle"> MODA Demo </span>
+		<form class="form-horizontal bodyContainer">
+			<input id="input" type="text" class="form-control requestText" placeholder="Say hello!"> 
+			<textarea class="form-control responseText" rows="5" id="response" cols="40"></textarea>
+		</form>
+	</div>
+</body>
+</html>
