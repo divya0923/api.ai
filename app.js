@@ -9,28 +9,29 @@ app.post('/webhook', function (req, res) {
   
   // read request params from post body
   var postParam = null;
-   if (req.method == 'POST') {
-        var jsonString = '';
+  if (req.method == 'POST') {
+      var jsonString = '';
 
-        req.on('data', function (data) {
-            jsonString += data;
-        });
+      req.on('data', function (data) {
+          jsonString += data;
+      });
 
-        req.on('end', function () {
-          postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
-          console.log("postParam" + postParam);
-        });
-    }
+      req.on('end', function () {
+        postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
+        console.log("postParam" + postParam);
+      });
+  }
   
   var response;
 
   // if param is null, send default value as response 
-  if(postParam == null || postParam == undefined)
-    response =  {
+  if(postParam == null || postParam == undefined){
+      response =  {
       "speech": "Okay. Other customers have felt that filter material quality is one of the important things to consider when buying an air filter. In this store Nordic Pure M14 is the best air filter for filter material quality based on customer data and review. Would you like to purchase Nordic pure M14?",
       "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
       "source": "apiai-filter-search"
     };
+  }
 
   // else fetch results for the user defined attribute 
   else {
@@ -53,13 +54,13 @@ app.post('/webhook', function (req, res) {
         "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
         "source": "apiai-filter-search"
       };
+    }
+    });
   }
-
     // post response
     res.contentType('application/json');
   	res.send(response); 
-  }
-  }); 
+    s
 });
 
 app.get('/test', function(req,res){
