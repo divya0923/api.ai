@@ -29,6 +29,9 @@ app.post('/webhook', function (req, res) {
             "displayText": "Filter matching your query is Nordic Pure M14",
             "source": "apiai-filter-search"
           };
+          // post response
+          res.contentType('application/json');
+          res.send(response); 
         }
 
         // else fetch results for the user defined attribute 
@@ -53,13 +56,15 @@ app.post('/webhook', function (req, res) {
               "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
               "source": "apiai-filter-search"
             };
+
+            // post response
+            res.contentType('application/json');
+            res.send(response); 
           }
           });
         } 
 
-        // post response
-        res.contentType('application/json');
-        res.send(response); 
+        
     });
   }
 });
