@@ -51,7 +51,7 @@ app.post('/webhook', function (req, res) {
                   
                   // construct response object
                   response =  {
-                    "speech": "Okay, other customers have felt that " + attributes[0].displayName + " is one of the important things to consider when buying an air filter. " + attributes[0].desc + " In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + attributes[0].displayName + " based on customer review and industry data. Would you like to purchase " + filterRows[0].filterModel +"?",
+                    "speech": "Okay, other customers have felt that " + attributes[0].displayName + " is one of the important things to consider when buying an air filter. " + attributes[0].desc + " In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + attributes[0].displayName + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?",
                     "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
                     "source": "apiai-filter-search"
                   };
