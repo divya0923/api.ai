@@ -20,48 +20,48 @@ app.post('/webhook', function (req, res) {
       req.on('end', function () {
         postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
         console.log("postParam" + postParam);
-
-        // if param is null, send default value as response 
-        if(postParam == null || postParam == undefined){
-            console.log("post param null");
-            response =  {
-            "speech": "Okay. Other customers have felt that filter material quality is one of the important things to consider when buying an air filter. In this store Nordic Pure M14 is the best air filter for filter material quality based on customer data and review. Would you like to purchase Nordic pure M14?",
-            "displayText": "Filter matching your query is Nordic Pure M14",
-            "source": "apiai-filter-search"
-          };
-        }
-
-        // else fetch results for the user defined attribute 
-        else {
-          console.log("post param not null");
-          // query data from couchDB through views  
-          filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
-          if (!err) { 
-            // get the array of filters from response
-            var filterRows = body.rows;
-            
-            // sort rows based on the request param
-            filterRows.sort(function(a, b) {
-              return parseFloat(a.value[postParam]) - parseFloat(b.value[postParam]);
-            });
-
-            console.log("matching filter model:" +filterRows[0].value.filterModel);
-            
-            // construct response object
-            response =  {
-              "speech": "Great, I can help you with that. In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + postParam + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?" ,
-              "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
-              "source": "apiai-filter-search"
-            };
-          }
-          });
-        }
-
       });
-  }  
-    // post response
-    res.contentType('application/json');
-  	res.send(response); 
+  }
+
+  // if param is null, send default value as response 
+  if(postParam == null){
+      console.log("post param null");
+      response =  {
+      "speech": "Okay. Other customers have felt that filter material quality is one of the important things to consider when buying an air filter. In this store Nordic Pure M14 is the best air filter for filter material quality based on customer data and review. Would you like to purchase Nordic pure M14?",
+      "displayText": "Filter matching your query is Nordic Pure M14",
+      "source": "apiai-filter-search"
+    };
+  }
+
+  // else fetch results for the user defined attribute 
+  else {
+    console.log("post param not null");
+    // query data from couchDB through views  
+    filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
+    if (!err) { 
+      // get the array of filters from response
+      var filterRows = body.rows;
+      
+      // sort rows based on the request param
+      filterRows.sort(function(a, b) {
+        return parseFloat(a.value[postParam]) - parseFloat(b.value[postParam]);
+      });
+
+      console.log("matching filter model:" +filterRows[0].value.filterModel);
+      
+      // construct response object
+      response =  {
+        "speech": "Great, I can help you with that. In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + postParam + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?" ,
+        "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
+        "source": "apiai-filter-search"
+      };
+    }
+    });
+  }
+
+  // post response
+  res.contentType('application/json');
+	res.send(response); 
 });
 
 app.get('/test', function(req,res){
