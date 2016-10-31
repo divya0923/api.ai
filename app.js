@@ -26,6 +26,7 @@ app.post('/webhook', function (req, res) {
 
   // if param is null, send default value as response 
   if(postParam == null || postParam == undefined){
+      console.log("post param null");
       response =  {
       "speech": "Okay. Other customers have felt that filter material quality is one of the important things to consider when buying an air filter. In this store Nordic Pure M14 is the best air filter for filter material quality based on customer data and review. Would you like to purchase Nordic pure M14?",
       "displayText": "Filter matching your query is Nordic Pure M14",
@@ -35,7 +36,8 @@ app.post('/webhook', function (req, res) {
 
   // else fetch results for the user defined attribute 
   else {
-       // query data from couchDB through views  
+    console.log("post param not null");
+    // query data from couchDB through views  
     filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
     if (!err) { 
       // get the array of filters from response
