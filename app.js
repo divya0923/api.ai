@@ -24,14 +24,45 @@ app.post('/webhook', function (req, res) {
         // if param is null, send default value as response 
         if(postParam == null){
             console.log("post param null");
-            response =  {
-            "speech": "Okay. Other customers have felt that filter material quality is one of the important things to consider when buying an air filter. In this store Nordic Pure M14 is the best air filter for filter material quality based on customer data and review. Would you like to purchase Nordic pure M14?",
-            "displayText": "Filter matching your query is Nordic Pure M14",
-            "source": "apiai-filter-search"
-          };
-          // post response
-          res.contentType('application/json');
-          res.send(response); 
+
+            filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {
+            if (!err) { 
+              // get attribute rating from the response
+              var attributes = body.rows[0].value;
+              
+              // sort based on the attribute priority 
+              attributes.sort(function(a, b) {
+                return parseFloat(a.priority) - parseFloat(b.priority);
+              });
+
+              console.log("attribute with highest priority: " +attributes[0].name);
+              
+              filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
+                if (!err) { 
+                  // get the array of filters from response
+                  var filterRows = body.rows;
+                  
+                  // sort rows based on the request param
+                  filterRows.sort(function(a, b) {
+                    return parseFloat(a.value[attributes[0].name]) - parseFloat(b.value[attributes[0].name]);
+                  });
+
+                  console.log("matching filter model:" +filterRows[0].value.filterModel);
+                  
+                  // construct response object
+                  response =  {
+                    "speech": "test",
+                    "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
+                    "source": "apiai-filter-search"
+                  };
+
+                  // post response
+                  res.contentType('application/json');
+                  res.send(response); 
+                }
+              });
+            }
+            });
         }
 
         // else fetch results for the user defined attribute 
