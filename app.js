@@ -28,7 +28,7 @@ app.post('/webhook', function (req, res) {
   if(postParam == null || postParam == undefined){
       response =  {
       "speech": "Okay. Other customers have felt that filter material quality is one of the important things to consider when buying an air filter. In this store Nordic Pure M14 is the best air filter for filter material quality based on customer data and review. Would you like to purchase Nordic pure M14?",
-      "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
+      "displayText": "Filter matching your query is Nordic Pure M14",
       "source": "apiai-filter-search"
     };
   }
