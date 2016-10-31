@@ -60,7 +60,6 @@ app.post('/webhook', function (req, res) {
     // post response
     res.contentType('application/json');
   	res.send(response); 
-    s
 });
 
 app.get('/test', function(req,res){
