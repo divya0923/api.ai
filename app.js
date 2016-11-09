@@ -17,6 +17,7 @@ app.use('/static', express.static(__dirname + '/public'));
 app.post('/webhook', function (req, res) {
   // read request params from post body
   var postParam = null;
+  var contextName = null;
   var response = null;
   if (req.method == 'POST') {
       var jsonString = '';
@@ -27,7 +28,8 @@ app.post('/webhook', function (req, res) {
 
       req.on('end', function () {
         postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
-        console.log("postParam" + postParam);
+        contextName = JSON.parse(jsonString).result.contexts.name;
+        console.log("postParam: " + postParam + "name :" + contextName);
 
         // if param is null, send default value as response 
         if(postParam == null){
