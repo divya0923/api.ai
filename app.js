@@ -44,7 +44,7 @@ app.post('/webhook', function (req, res) {
                 localStorage.setItem("filterPriority", priority);
               }
 
-              console.log("priority" + priority);
+              console.log("priority" + localStorage.getItem("filterPriority"));
 
               // get attribute rating from the response
               var attributes = body.rows[0].value;
