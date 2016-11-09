@@ -43,7 +43,7 @@ app.post('/webhook', function (req, res) {
               // read priority from local storage
               var priority = localStorage.getItem("filterPriority");
               if(priority == null){
-                priority = 1;
+                priority = 0;
               }
               else {
                 priority = parseInt(priority) + 1;
@@ -51,7 +51,7 @@ app.post('/webhook', function (req, res) {
 
               if(priority > body.rows[0].value.length || priority < 0){
                 console.log("invalid value for priority, defaulting it to 1");
-                priority = 1;
+                priority = 0;
               }
 
               localStorage.setItem("filterPriority", priority);
