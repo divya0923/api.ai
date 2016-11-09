@@ -132,6 +132,12 @@ app.post('/webhook', function (req, res) {
   }
 });
 
+app.get('/test', function(req, res){
+    localStorage.setItem("test", "value");
+   localStorage.clear();
+   res.send(localStorage.getItem("test"));
+});
+
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
   console.log('Example app listening on port 3000!');
