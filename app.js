@@ -1,12 +1,21 @@
+// express conf
 var express = require('express');
-var nano = require('nano')('https://couchdb-9ee129.smileupps.com/');
 var app = express();
+var session = require("express-session");
+app.use(session({secret: 'currentSession', resave: false, saveUninitialized: true }));
+
+// nano conf 
+var nano = require('nano')('https://couchdb-9ee129.smileupps.com/');
 var filter = nano.db.use('filter');
 
+// static files 
 app.use('/static', express.static(__dirname + '/public'));
 
+// handle post request to return filter 
 app.post('/webhook', function (req, res) {
-  
+  // initialize session 
+  var session = req.session;
+
   // read request params from post body
   var postParam = null;
   var response = null;
@@ -23,10 +32,11 @@ app.post('/webhook', function (req, res) {
 
         // if param is null, send default value as response 
         if(postParam == null){
-            console.log("post param null");
+            console.log("post param null, get default filter flow");
 
             filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {
-            if (!err) { 
+            if (!err) {
+
               // get attribute rating from the response
               var attributes = body.rows[0].value;
               
@@ -34,6 +44,15 @@ app.post('/webhook', function (req, res) {
               attributes.sort(function(a, b) {
                 return parseFloat(a.priority) - parseFloat(b.priority);
               });
+
+              if(session['sessData'] == null){
+                console.log("sessionData null");
+                session.sessData = {};
+                session.sessData.priority = 1;
+              }
+              else {
+                 console.log(session.sessData.priority);
+              }
 
               console.log("attribute with highest priority: " +attributes[0].name);
               
