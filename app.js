@@ -13,9 +13,6 @@ app.use('/static', express.static(__dirname + '/public'));
 
 // handle post request to return filter 
 app.post('/webhook', function (req, res) {
-  // initialize session 
-  var session = req.session;
-
   // read request params from post body
   var postParam = null;
   var response = null;
@@ -45,13 +42,12 @@ app.post('/webhook', function (req, res) {
                 return parseFloat(a.priority) - parseFloat(b.priority);
               });
 
-              if(session.sessData == null){
-                console.log("sessionData null");
-                session.sessData = {};
+              if(req.session.priority == null){
                 session.sessData.priority = 1;
+                console.log("session null");
               }
               else {
-                 console.log(session.sessData.priority);
+                 console.log(req.session.priority);
               }
 
               console.log("attribute with highest priority: " +attributes[0].name);
