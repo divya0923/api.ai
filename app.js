@@ -43,7 +43,7 @@ app.post('/webhook', function (req, res) {
               });
 
               if(req.session.priority == null){
-                session.sessData.priority = 1;
+                req.session.priority = 1;
                 console.log("session null");
               }
               else {
