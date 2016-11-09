@@ -96,6 +96,10 @@ app.post('/webhook', function (req, res) {
         // else fetch results for the user defined attribute 
         else {
           console.log("post param not null");
+
+          // reset localStorage
+          localStorage.setItem("filterPriority", 0);
+          
           // query data from couchDB through views  
           filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
           if (!err) { 
@@ -126,33 +130,6 @@ app.post('/webhook', function (req, res) {
         
     });
   }
-});
-
-app.get('/test', function(req,res){
-  res.contentType('application/json');
-  filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
-  var attr = "filterMaterialQuality";
-  if (!err) {
-     var filterRows = body.rows;
-     filterRows.sort(function(a, b) {
-        return parseFloat(a.value[attr]) - parseFloat(b.value[attr]);
-     });
-     console.log(filterRows[0].value.filterModel);
-     var response =  {
-        "speech": "Filter matching your query is " + filterRows[0].value.filterModel,
-        "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
-        "source": "apiai-filter-search"
-    }
-    res.send(response); 
-  }
-  }); 
-});
-
-app.get('/setsession',function(req,res){
-
-localStorage.setItem('myFirstKey', 'myFirstValue');
-console.log(localStorage.getItem('myFirstKey'));
-
 });
 
 var port = process.env.PORT || 3000;
