@@ -45,7 +45,7 @@ app.post('/webhook', function (req, res) {
               }
 
               console.log("priority" + priority);
-              
+
               // get attribute rating from the response
               var attributes = body.rows[0].value;
               
@@ -53,14 +53,6 @@ app.post('/webhook', function (req, res) {
               attributes.sort(function(a, b) {
                 return parseFloat(a.priority) - parseFloat(b.priority);
               });
-
-              if(req.session.priority == null || req.session.priority == undefined){
-                req.session.priority = 1;
-                console.log("session null");
-              }
-              else {
-                 console.log(req.session.priority);
-              }
 
               console.log("attribute with highest priority: " +attributes[0].name);
               
