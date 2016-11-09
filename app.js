@@ -42,7 +42,7 @@ app.post('/webhook', function (req, res) {
                 return parseFloat(a.priority) - parseFloat(b.priority);
               });
 
-              if(req.session.priority == null){
+              if(req.session.priority == null || req.session.priority == undefined){
                 req.session.priority = 1;
                 console.log("session null");
               }
@@ -133,6 +133,23 @@ app.get('/test', function(req,res){
     res.send(response); 
   }
   }); 
+});
+
+app.get('/setsession',function(req,res){
+    sess=req.session;
+    if(sess == null || sess == undefined)
+      console.log('session null');
+    else 
+      console.log("session exists");
+
+    sess.sessdata = {};
+    sess.sessdata.email= "inaam";
+    sess.sessdata.pass= "inaam1234";
+    var data = {
+        "Data":""
+    };
+    data["Data"] = 'Session set';
+    res.json(data);
 });
 
 var port = process.env.PORT || 3000;
