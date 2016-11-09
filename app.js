@@ -49,7 +49,7 @@ app.post('/webhook', function (req, res) {
                 priority = parseInt(priority) + 1;
               }
 
-              if(priority > body.rows[0].value.length || priority < 0){
+              if(priority > body.rows[0].value.length - 1 || priority < 0){
                 console.log("invalid value for priority, defaulting it to 1");
                 priority = 0;
               }
