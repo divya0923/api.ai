@@ -55,7 +55,7 @@ app.post('/webhook', function (req, res) {
                 return parseFloat(a.priority) - parseFloat(b.priority);
               });
 
-              console.log("attribute with highest priority: " +attributes[0].name);
+              console.log("attribute with highest priority: " +attributes[priority].name);
               
               filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
                 if (!err) { 
