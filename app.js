@@ -37,14 +37,15 @@ app.post('/webhook', function (req, res) {
             if (!err) {
               var priority = localStorage.getItem("filterPriority");
               if(priority == null){
+                priority = 1;
                 localStorage.setItem ("filterPriority", 1);
               }
               else {
-                priority = priority + 1;
+                priority = parseInt(priority) + 1;
                 localStorage.setItem("filterPriority", priority);
               }
 
-              console.log("priority" + localStorage.getItem("filterPriority"));
+              console.log("priority" + priority);
 
               // get attribute rating from the response
               var attributes = body.rows[0].value;
