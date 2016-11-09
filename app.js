@@ -34,22 +34,30 @@ app.post('/webhook', function (req, res) {
             console.log("post param null, get default filter flow");
 
             filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {
+           
             if (!err) {
-              var priority = localStorage.getItem("filterPriority");
-              if(priority == null){
-                priority = 1;
-                localStorage.setItem ("filterPriority", 1);
-              }
-              else {
-                priority = parseInt(priority) + 1;
-                localStorage.setItem("filterPriority", priority);
-              }
-
-              console.log("priority" + priority);
 
               // get attribute rating from the response
               var attributes = body.rows[0].value;
-              
+
+              // read priority from local storage
+              var priority = localStorage.getItem("filterPriority");
+              if(priority == null){
+                priority = 1;
+              }
+              else {
+                priority = parseInt(priority) + 1;
+              }
+
+              if(priority > body.rows[0].value.length || priority < 0){
+                console.log("invalid value for priority, defaulting it to 1");
+                priority = 1;
+              }
+
+              localStorage.setItem("filterPriority", priority);
+
+              console.log("priority" + priority);
+
               // sort based on the attribute priority 
               attributes.sort(function(a, b) {
                 return parseFloat(a.priority) - parseFloat(b.priority);
