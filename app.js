@@ -1,12 +1,14 @@
 // express conf
 var express = require('express');
 var app = express();
-var session = require("express-session");
-app.use(session({secret: 'currentSession', resave: false, saveUninitialized: true }));
 
 // nano conf 
 var nano = require('nano')('https://couchdb-9ee129.smileupps.com/');
 var filter = nano.db.use('filter');
+
+// local storage conf 
+var LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('./scratch');
 
 // static files 
 app.use('/static', express.static(__dirname + '/public'));
@@ -33,7 +35,17 @@ app.post('/webhook', function (req, res) {
 
             filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {
             if (!err) {
+              var priority = localStorage.getItem("filterPriority");
+              if(priority == null){
+                localStorage.setItem ("filterPriority", 1);
+              }
+              else {
+                priority = priority + 1;
+                localStorage.setItem("filterPriority", priority);
+              }
 
+              console.log("priority" + priority);
+              
               // get attribute rating from the response
               var attributes = body.rows[0].value;
               
@@ -136,20 +148,10 @@ app.get('/test', function(req,res){
 });
 
 app.get('/setsession',function(req,res){
-    sess=req.session;
-    if(sess == null || sess == undefined)
-      console.log('session null');
-    else 
-      console.log("session exists");
 
-    sess.sessdata = {};
-    sess.sessdata.email= "inaam";
-    sess.sessdata.pass= "inaam1234";
-    var data = {
-        "Data":""
-    };
-    data["Data"] = 'Session set';
-    res.json(data);
+localStorage.setItem('myFirstKey', 'myFirstValue');
+console.log(localStorage.getItem('myFirstKey'));
+
 });
 
 var port = process.env.PORT || 3000;
