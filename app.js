@@ -33,72 +33,68 @@ app.post('/webhook', function (req, res) {
         if(postParam == null){
             console.log("post param null, get default filter flow");
 
-            filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {
-           
-            if (!err) {
+            filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {   
+              if (!err) {
 
-              // get attribute rating from the response
-              var attributes = body.rows[0].value;
+                // get attribute rating from the response
+                var attributes = body.rows[0].value;
 
-              // read priority from local storage
-              var priority = localStorage.getItem("filterPriority");
-              if(priority == null){
-                priority = 0;
-              }
-              else {
-                priority = parseInt(priority) + 1;
-              }
-
-              if(priority > body.rows[0].value.length - 1 || priority < 0){
-                console.log("invalid value for priority, defaulting it to 1");
-                priority = 0;
-              }
-
-              localStorage.setItem("filterPriority", priority);
-
-              console.log("priority" + priority);
-
-              // sort based on the attribute priority 
-              attributes.sort(function(a, b) {
-                return parseFloat(a.priority) - parseFloat(b.priority);
-              });
-
-              console.log("attribute with highest priority: " +attributes[priority].name);
-              
-              filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
-                if (!err) { 
-                  // get the array of filters from response
-                  var filterRows = body.rows;
-                  
-                  // sort rows based on the request param
-                  filterRows.sort(function(a, b) {
-                    return parseFloat(a.value[attributes[priority].name]) - parseFloat(b.value[attributes[priority].name]);
-                  });
-
-                  console.log("matching filter model:" +filterRows[0].value.filterModel);
-                  
-                  // construct response object
-                  response =  {
-                    "speech": "Okay, other customers have felt that " + attributes[priority].displayName + " is one of the important things to consider when buying an air filter. " + attributes[0].desc + " In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + attributes[0].displayName + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?",
-                    "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
-                    "source": "apiai-filter-search"
-                  };
-
-                  // post response
-                  res.contentType('application/json');
-                  res.send(response); 
+                // read priority from local storage
+                var priority = localStorage.getItem("filterPriority");
+                if(priority == null){
+                  priority = 0;
                 }
-              });
-            }
+                else {
+                  priority = parseInt(priority) + 1;
+                }
+
+                if(priority > body.rows[0].value.length - 1 || priority < 0){
+                  console.log("invalid value for priority, defaulting it to 1");
+                  priority = 0;
+                }
+
+                localStorage.setItem("filterPriority", priority);
+
+                console.log("priority" + priority);
+
+                // sort based on the attribute priority 
+                attributes.sort(function(a, b) {
+                  return parseFloat(a.priority) - parseFloat(b.priority);
+                });
+
+                console.log("attribute with highest priority: " +attributes[priority].name);
+                
+                filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
+                  if (!err) { 
+                    // get the array of filters from response
+                    var filterRows = body.rows;
+                    
+                    // sort rows based on the request param
+                    filterRows.sort(function(a, b) {
+                      return parseFloat(a.value[attributes[priority].name]) - parseFloat(b.value[attributes[priority].name]);
+                    });
+
+                    console.log("matching filter model:" +filterRows[0].value.filterModel);
+                    
+                    // construct response object
+                    response =  {
+                      "speech": "Okay, other customers have felt that " + attributes[priority].displayName + " is one of the important things to consider when buying an air filter. " + attributes[0].desc + " In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + attributes[0].displayName + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?",
+                      "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
+                      "source": "apiai-filter-search"
+                    };
+
+                    // post response
+                    res.contentType('application/json');
+                    res.send(response); 
+                  }
+                });
+              }
             });
         }
 
         // else fetch results for the user defined attribute 
         else {
           console.log("post param not null");
-
-          // reset localStorage
-          localStorage.setItem("filterPriority", null);
 
           // query data from couchDB through views  
           filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
@@ -130,12 +126,6 @@ app.post('/webhook', function (req, res) {
         
     });
   }
-});
-
-app.get('/test', function(req, res){
-    localStorage.setItem("test", "value");
-   localStorage.clear();
-   res.send(localStorage.getItem("test"));
 });
 
 var port = process.env.PORT || 3000;
