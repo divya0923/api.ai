@@ -98,8 +98,8 @@ app.post('/webhook', function (req, res) {
           console.log("post param not null");
 
           // reset localStorage
-          localStorage.setItem("filterPriority", 0);
-          
+          localStorage.setItem("filterPriority", null);
+
           // query data from couchDB through views  
           filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
           if (!err) { 
