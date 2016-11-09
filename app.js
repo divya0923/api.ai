@@ -45,7 +45,7 @@ app.post('/webhook', function (req, res) {
                 return parseFloat(a.priority) - parseFloat(b.priority);
               });
 
-              if(session['sessData'] == null){
+              if(session.sessData == null){
                 console.log("sessionData null");
                 session.sessData = {};
                 session.sessData.priority = 1;
