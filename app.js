@@ -64,14 +64,14 @@ app.post('/webhook', function (req, res) {
                   
                   // sort rows based on the request param
                   filterRows.sort(function(a, b) {
-                    return parseFloat(a.value[attributes[0].name]) - parseFloat(b.value[attributes[0].name]);
+                    return parseFloat(a.value[attributes[priority].name]) - parseFloat(b.value[attributes[priority].name]);
                   });
 
                   console.log("matching filter model:" +filterRows[0].value.filterModel);
                   
                   // construct response object
                   response =  {
-                    "speech": "Okay, other customers have felt that " + attributes[0].displayName + " is one of the important things to consider when buying an air filter. " + attributes[0].desc + " In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + attributes[0].displayName + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?",
+                    "speech": "Okay, other customers have felt that " + attributes[priority].displayName + " is one of the important things to consider when buying an air filter. " + attributes[0].desc + " In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + attributes[0].displayName + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?",
                     "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
                     "source": "apiai-filter-search"
                   };
