@@ -99,12 +99,11 @@
 				type: "POST",
 				url: baseUrl + "query?v=20150910",
 				contentType: "application/json; charset=utf-8",
-				sessionId : 1234567890,
 				dataType: "json",
 				headers: {
 					"Authorization": "Bearer " + accessToken
 				},
-				data: JSON.stringify({ q: text, lang: "en" }),
+				data: JSON.stringify({ q: text, lang: "en", sessionId: "1234567890"}),
 				success: function(data) {
 					setResponse(JSON.stringify(data, undefined, 2));
 				},
