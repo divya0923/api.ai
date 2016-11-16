@@ -28,7 +28,7 @@ app.post('/webhook', function (req, res) {
 
       req.on('end', function () {
         postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
-        contextName = JSON.parse(jsonString).result.contexts.name;
+        contextName = JSON.parse(jsonString).result.contexts[0].name;
         console.log("postParam: " + postParam + "name :" + contextName);
 
         // if param is null, send default value as response 
