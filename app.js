@@ -127,6 +127,8 @@ app.post('/webhook', function (req, res) {
                 "source": "apiai-filter-search"
               };
 
+            localStorage.setItem("prevContext", contextName);
+            
             // post response
             res.contentType('application/json');
             res.send(response); 
