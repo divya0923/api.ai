@@ -41,6 +41,7 @@ app.post('/webhook', function (req, res) {
                 var attributes = body.rows[0].value;
 
                 var prevContext = localStorage.getItem("prevContext");
+                console.log("prevContext" + prevContext);
                 // read priority from local storage
                 var priority = localStorage.getItem("filterPriority");
                 if(priority == null || prevContext == null || prevContext != contextName){
