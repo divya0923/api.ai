@@ -44,11 +44,11 @@ app.post('/webhook', function (req, res) {
                 console.log("prevContext" + prevContext);
                 // read priority from local storage
                 var priority = localStorage.getItem("filterPriority");
-                if(priority == null || prevContext == null || prevContext != contextName){
-                  priority = 0;
+                if(prevContext == contextName){
+                   priority = parseInt(priority) + 1;
                 }
                 else {
-                  priority = parseInt(priority) + 1;
+                  priority = 0;
                 }
 
                 if(priority > body.rows[0].value.length - 1 || priority < 0){
@@ -61,7 +61,7 @@ app.post('/webhook', function (req, res) {
                 console.log("priority" + priority);
 
                 // sort based on the attribute priority 
-                attributes.sort(function(a, b) {
+                attributes.sort(function(a, b) { 
                   return parseFloat(a.priority) - parseFloat(b.priority);
                 });
 
@@ -128,7 +128,7 @@ app.post('/webhook', function (req, res) {
               };
 
             localStorage.setItem("prevContext", contextName);
-            
+
             // post response
             res.contentType('application/json');
             res.send(response); 
