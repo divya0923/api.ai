@@ -122,7 +122,7 @@ app.post('/webhook', function (req, res) {
               };
             else
               response =  {
-                "speech": "Unfortunately, I don't have any information on that attribute. Is there something else you're looking for in an air filter?",
+                "speech": "I am sorry. We dont have any products that match your description. Can you please describe it in another way?",
                 "displayText": "Filter not found",
                 "source": "apiai-filter-search"
               };
