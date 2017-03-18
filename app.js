@@ -147,7 +147,7 @@ app.post('/webhook', function (req, res) {
 });
 
 var gotoSatFlow = function(postParam, req, res){
-  var brand = JSON.parse(jsonString).result.parameters.brand;
+  var brand = JSON.parse(postParam).result.parameters.brand;
   console.log("brand :" + brand);
   var response =  {
                 "speech": "Great!",
