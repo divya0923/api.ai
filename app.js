@@ -34,11 +34,11 @@ app.post('/webhook', function (req, res) {
         console.log("postParam: " + postParam + "name :" + contextName);
 
         if(brand != null){
-           gotoSatFlow(postParam, req, res);
+           gotoSatFlow(jsonString, req, res);
         }
         
         // if param is null, send default value as response 
-        if(postParam == null){
+        else if(postParam == null){
             console.log("post param null, get default filter flow");
 
             filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {   
@@ -141,15 +141,14 @@ app.post('/webhook', function (req, res) {
             res.send(response); 
           }
           });
-        } 
-
-        
+        }         
     });
   }
 });
 
 var gotoSatFlow = function(postParam, req, res){
-  console.log("%o" , postParam);
+  var brand = JSON.parse(jsonString).result.parameters.brand;
+  console.log("brand :" + brand);
   var response =  {
                 "speech": "Great!",
                 "displayText": "Filter not found",
