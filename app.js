@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 
 // nano conf 
-var nano = require('nano')('https://couchdb-d4dedc.smileupps.com/');
+var nano = require('nano')('https://couchdb-c0e747.smileupps.com/');
 var filter = nano.db.use('filter');
 
 // local storage conf 
