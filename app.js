@@ -17,6 +17,7 @@ app.use('/static', express.static(__dirname + '/public'));
 app.post('/webhook', function (req, res) {
   // read request params from post body
   var postParam = null;
+  var brand = null;
   var contextName = null;
   var response = null;
   if (req.method == 'POST') {
@@ -28,8 +29,14 @@ app.post('/webhook', function (req, res) {
 
       req.on('end', function () {
         postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
+        brand = JSON.parse(jsonString).result.parameters.brand;
         contextName = JSON.parse(jsonString).result.contexts[0].name;
         console.log("postParam: " + postParam + "name :" + contextName);
+
+        if(brand != null){
+           gotoSatFlow(postParam, req, res);
+        }
+        
         // if param is null, send default value as response 
         if(postParam == null){
             console.log("post param null, get default filter flow");
@@ -140,6 +147,17 @@ app.post('/webhook', function (req, res) {
     });
   }
 });
+
+var gotoSatFlow = function(postParam, req, res){
+  console.log("%o" , postParam);
+  var response =  {
+                "speech": "Great!",
+                "displayText": "Filter not found",
+                "source": "apiai-filter-search"
+              };
+  res.contentType('application/json');
+  res.send(response); 
+};
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
