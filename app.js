@@ -169,8 +169,8 @@ var gotoSatFlow = function(postParam, req, res){
               "source" :  "apiai-filter-search"
           }; 
         }
+      }
     }
-
   });
 
   res.contentType('application/json');
