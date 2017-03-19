@@ -17,7 +17,7 @@ app.use('/static', express.static(__dirname + '/public'));
 app.post('/webhook', function (req, res) {
   // read request params from post body
   var postParam = null;
-  var brand = null;
+  var brand = null, any = null;
   var contextName = null;
   var response = null;
   if (req.method == 'POST') {
@@ -30,10 +30,11 @@ app.post('/webhook', function (req, res) {
       req.on('end', function () {
         postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
         brand = JSON.parse(jsonString).result.parameters.brand;
+        any = JSON.parse(jsonString).result.parameters.any;
         contextName = JSON.parse(jsonString).result.contexts[0].name;
         console.log("postParam: " + postParam + "name :" + contextName);
 
-        if(brand != null){
+        if(brand != null || any != null){
            gotoSatFlow(jsonString, req, res);
         }
         
@@ -165,7 +166,7 @@ var gotoSatFlow = function(postParam, req, res){
           }
         }
 
-        if(response == null){
+        if(response == ""){
           response = { 
                 "speech": "I'm sorry. I did not recognize what you said. Would you like to make a purchase?" ,
                 "displayText": "Unrecognizable Input", 
