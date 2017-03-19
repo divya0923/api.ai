@@ -163,14 +163,17 @@ var gotoSatFlow = function(postParam, req, res){
                 "source": "apiai-filter-search"
               };
           }
-          else { 
-             response = { 
-              "speech": "I'm sorry. I did not recognize what you said. Would you like to make a purchase?" ,
-              "displayText": "Unrecognizable Input", 
-              "source" :  "apiai-filter-search"
-          }; 
+        }
+
+        if(response == null){
+          response = { 
+                "speech": "I'm sorry. I did not recognize what you said. Would you like to make a purchase?" ,
+                "displayText": "Unrecognizable Input", 
+                "source" :  "apiai-filter-search"
+            }; 
         }
       }
+    
       res.contentType('application/json');
       res.send(response); 
     }
