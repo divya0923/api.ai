@@ -176,7 +176,7 @@ var gotoSatFlow = function(postParam, req, res){
     
       res.contentType('application/json');
       res.send(response); 
-    }
+    
   });
 };
 
