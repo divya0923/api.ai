@@ -165,9 +165,9 @@ var gotoSatFlow = function(postParam, req, res){
           else { 
              response = { 
               "speech": "I'm sorry. I did not recognize what you said. Would you like to make a purchase?" ,
-              "displayText": "Unrecognizable Input"
-              "source": "apiai-filter-search"
-          }
+              "displayText": "Unrecognizable Input", 
+              "source" :  "apiai-filter-search"
+          }; 
         }
     }
 
