@@ -148,12 +148,29 @@ app.post('/webhook', function (req, res) {
 
 var gotoSatFlow = function(postParam, req, res){
   var brand = JSON.parse(postParam).result.parameters.brand;
+  var response = "";
   console.log("brand :" + brand);
-  var response =  {
-                "speech": "Great!",
-                "displayText": "Filter not found",
+  filter.view('searchFilterDesign', 'searchBrandView', function(err, body) {   
+    if (!err) {
+        var brandRows = body.rows;
+        for(var i = 0; i < brandRows.length; i++ ) { 
+          if(brandRows[i].value.name == brand){
+            response =  {
+                "speech": "Great, I can help you with that. We have multiple +" brandRows[i].value.name + " filters in this store, located at " +  brandRows[i].value.shelf + ". Would you like to make a purchase?" ,
+                "displayText": "Brand matching the query is " + brandRows[i].value.name,
                 "source": "apiai-filter-search"
               };
+          }
+          else {
+             "speech": "I'm sorry. I did not recognize what you said. Would you like to make a purchase?" ,
+              "displayText": "Unrecognizable Input"
+              "source": "apiai-filter-search"
+          }
+        }
+    }
+
+  });
+
   res.contentType('application/json');
   res.send(response); 
 };
