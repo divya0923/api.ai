@@ -155,7 +155,7 @@ var gotoSatFlow = function(postParam, req, res){
         var brandRows = body.rows;
         for(var i = 0; i < brandRows.length; i++ ) { 
           console.log("brand in loop :" + brandRows[i].value.name);
-          if(brandRows[i].value.name == brand){
+          if(brandRows[i].value.name == brand.toLowerCase()){
             response =  {
                 "speech": "Great, I can help you with that. We have multiple " + brandRows[i].value.name + " filters in this store, located at " +  brandRows[i].value.shelf + ". Would you like to make a purchase?" ,
                 "displayText": "Brand matching the query is " + brandRows[i].value.name,
