@@ -157,7 +157,7 @@ var gotoSatFlow = function(postParam, req, res){
           console.log("brand in loop :" + brandRows[i].value.name);
           if(brandRows[i].value.name == brand){
             response =  {
-                "speech": "Great, I can help you with that. We have multiple +" brandRows[i].value.name + " filters in this store, located at " +  brandRows[i].value.shelf + ". Would you like to make a purchase?" ,
+                "speech": "Great, I can help you with that. We have multiple " + brandRows[i].value.name + " filters in this store, located at " +  brandRows[i].value.shelf + ". Would you like to make a purchase?" ,
                 "displayText": "Brand matching the query is " + brandRows[i].value.name,
                 "source": "apiai-filter-search"
               };
