@@ -170,11 +170,10 @@ var gotoSatFlow = function(postParam, req, res){
           }; 
         }
       }
+      res.contentType('application/json');
+      res.send(response); 
     }
   });
-
-  res.contentType('application/json');
-  res.send(response); 
 };
 
 var port = process.env.PORT || 3000;
