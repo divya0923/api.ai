@@ -16,6 +16,7 @@ app.use('/static', express.static(__dirname + '/public'));
 // handle post request to return filter 
 app.post('/webhook', function (req, res) {
   // read request params from post body
+  var action = null;
   var postParam = null;
   var brand = null, any = null;
   var contextName = null;
@@ -28,6 +29,7 @@ app.post('/webhook', function (req, res) {
       });
 
       req.on('end', function () {
+        action = JSON.parse(jsonString).result.action;
         postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
         brand = JSON.parse(jsonString).result.parameters.brand;
         any = JSON.parse(jsonString).result.parameters.any;
@@ -36,6 +38,10 @@ app.post('/webhook', function (req, res) {
 
         if(brand != null || any != null){
            gotoSatFlow(jsonString, req, res);
+        }
+
+        else if(action == "searchBrandWithoutAttr"){
+           gotoSearchBrandWithoutAttr(jsonString, req, res);
         }
         
         // if param is null, send default value as response 
@@ -180,6 +186,18 @@ var gotoSatFlow = function(postParam, req, res){
     
   });
 };
+
+var gotoSearchBrandWithoutAttr = function(postParam, req, res){
+  var brand = JSON.parse(postParam).result.context.parameters.brand;
+  var response = {
+                "speech": "Okay. Do you have any criteria for " + brand + " air filter?" ,
+                "displayText": "Brand matching the query is " + brand,
+                "source": "apiai-filter-search"
+              };
+
+  res.contentType('application/json');
+  res.send(response);
+}
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
