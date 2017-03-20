@@ -189,7 +189,7 @@ var gotoSatFlow = function(postParam, req, res){
 };
 
 var gotoSearchBrandWithoutAttr = function(postParam, req, res){
-  var brand = JSON.parse(postParam).result.context.parameters.brand;
+  var brand = JSON.parse(postParam).result.contexts.parameters.brand;
   var response = {
                 "speech": "Okay. Do you have any criteria for " + brand + " air filter?" ,
                 "displayText": "Brand matching the query is " + brand,
