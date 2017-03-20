@@ -30,6 +30,7 @@ app.post('/webhook', function (req, res) {
 
       req.on('end', function () {
         action = JSON.parse(jsonString).result.action;
+        console.log("action :" + action);
         postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
         brand = JSON.parse(jsonString).result.parameters.brand;
         any = JSON.parse(jsonString).result.parameters.any;
