@@ -46,7 +46,7 @@ app.post('/webhook', function (req, res) {
         }
 
         else if(action == "searchBrandWithoutAttr_no"){
-          searchBrandWithoutAttr_no(jsonString, req, res);
+          searchBrandWithoutAttrNo(jsonString, req, res);
         }
 
         else if(action == "searchBrandWithQuantitativeAttr"){
@@ -196,7 +196,7 @@ var searchBranchWithoutAttr = function(postParam, req, res){
   });
 };
 
-var searchBranchWithoutAttr_no = function(postParam, req, res){
+var searchBrandWithoutAttrNo = function(postParam, req, res){
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand;
   var response = {
                 "speech": "Okay. Do you have any criteria for " + brand + " air filter?" ,
