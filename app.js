@@ -37,13 +37,21 @@ app.post('/webhook', function (req, res) {
         contextName = JSON.parse(jsonString).result.contexts[0].name;
         console.log("postParam: " + postParam + "name :" + contextName);
 
-        if(brand != null || any != null){
+        /*if(brand != null || any != null){
            gotoSatFlow(jsonString, req, res);
+        }*/
+
+        if(action="searchBrandWithoutAttr") {
+          searchBranchWithoutAttr(jsonString, req, res);
         }
 
-        else if(action == "searchBrandWithoutAttr"){
-           gotoSearchBrandWithoutAttr(jsonString, req, res);
+        else if(action == "searchBrandWithoutAttr_no"){
+          searchBrandWithoutAttr_no(jsonString, req, res);
         }
+
+        else if(action == "searchBrandWithQuantitativeAttr"){
+          searchBrandWithQuantitativeAttr(jsonString, req, res);
+        } 
         
         // if param is null, send default value as response 
         else if(postParam == null){
@@ -154,7 +162,7 @@ app.post('/webhook', function (req, res) {
   }
 });
 
-var gotoSatFlow = function(postParam, req, res){
+var searchBranchWithoutAttr = function(postParam, req, res){
   var brand = JSON.parse(postParam).result.parameters.brand;
   var response = "";
   console.log("brand :" + brand);
@@ -188,11 +196,24 @@ var gotoSatFlow = function(postParam, req, res){
   });
 };
 
-var gotoSearchBrandWithoutAttr = function(postParam, req, res){
+var searchBranchWithoutAttr_no = function(postParam, req, res){
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand;
   var response = {
                 "speech": "Okay. Do you have any criteria for " + brand + " air filter?" ,
                 "displayText": "Brand matching the query is " + brand,
+                "source": "apiai-filter-search"
+              };
+
+  res.contentType('application/json');
+  res.send(response);
+}
+
+var searchBrandWithQuantitativeAttr = function(postParam, req, res){
+  var brand = JSON.parse(postParam).result.parameters.brand;
+  var attribute = JSON.parse(postParam).result.parameters.quantitativeAttr;
+  var response = {
+                "speech": "Great, I can help you with that. Do you have any minimum criteria for " + brand + " air filter with " + attribute + "?" ,
+                "displayText": "Great, I can help you with that. Do you have any minimum criteria for " + brand + " air filter with " + attribute + "?" ,
                 "source": "apiai-filter-search"
               };
 
