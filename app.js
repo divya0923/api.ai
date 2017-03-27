@@ -41,7 +41,7 @@ app.post('/webhook', function (req, res) {
            gotoSatFlow(jsonString, req, res);
         }*/
 
-        if(action="searchBrandWithoutAttr") {
+        if(action == "searchBrandWithoutAttr") {
           searchBranchWithoutAttr(jsonString, req, res);
         }
 
