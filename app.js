@@ -45,7 +45,7 @@ app.post('/webhook', function (req, res) {
           searchBranchWithoutAttr(jsonString, req, res);
         }
 
-        else if(action == "searchBrandWithoutAttr_no"){
+        else if(action == "searchBrandWithoutAttrNo"){
           searchBrandWithoutAttrNo(jsonString, req, res);
         }
 
