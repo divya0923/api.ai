@@ -234,7 +234,7 @@ var searchBrandWithQuantitativeAttrNo = function(postParam, req, res){
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand.toLowerCase();
   if(brand == "3m") 
     brand = "filtrete";
-  console.log("attribute :"  attribute + " brand: " + brand);
+  console.log("attribute :" + attribute + " brand: " + brand);
 
   filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err, body) {  
     if(!err){
