@@ -51,6 +51,10 @@ app.post('/webhook', function (req, res) {
 
         else if(action == "searchBrandWithQuantitativeAttr"){
           searchBrandWithQuantitativeAttr(jsonString, req, res);
+        }
+
+        else if(action == "searchBrandWithQuantitativeAttrNo"){
+          searchBrandWithQuantitativeAttrNo(jsonString, req, res);
         } 
         
         // if param is null, send default value as response 
@@ -163,6 +167,7 @@ app.post('/webhook', function (req, res) {
 });
 
 var searchBranchWithoutAttr = function(postParam, req, res){
+  console.log("searchBranchWithoutAttr");
   var brand = JSON.parse(postParam).result.parameters.brand;
   var response = "";
   console.log("brand :" + brand);
@@ -197,6 +202,7 @@ var searchBranchWithoutAttr = function(postParam, req, res){
 };
 
 var searchBrandWithoutAttrNo = function(postParam, req, res){
+  console.log("searchBrandWithoutAttrNo");
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand;
   var response = {
                 "speech": "Okay. Do you have any criteria for " + brand + " air filter?" ,
@@ -209,6 +215,7 @@ var searchBrandWithoutAttrNo = function(postParam, req, res){
 }
 
 var searchBrandWithQuantitativeAttr = function(postParam, req, res){
+  console.log("searchBrandWithQuantitativeAttr");
   var brand = JSON.parse(postParam).result.parameters.brand;
   var attribute = JSON.parse(postParam).result.parameters.quantitativeAttr;
   var response = {
@@ -219,6 +226,32 @@ var searchBrandWithQuantitativeAttr = function(postParam, req, res){
 
   res.contentType('application/json');
   res.send(response);
+}
+
+var searchBrandWithQuantitativeAttrNo = function(postParam, req, res){
+  console.log("searchBrandWithQuantitativeAttrNo");
+  var attribute = JSON.parse(postParam).result.contexts[0].parameters.quantitativeAttr.toLowerCase();
+  var brand = JSON.parse(postParam).result.contexts[0].parameters.brand.toLowerCase();
+  if(brand == "3m") 
+    brand = "filtrete";
+  console.log("attribute :"  attribute + " brand: " + brand);
+
+  filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err, body) {  
+    if(!err){
+      var brandData = body.rows[0].value;
+      var modelMedium = brandData.model_medium[attribute];
+      var shelf = brandData.shelf;
+      console.log("modelMedium: " + modelMedium);
+      var response = {
+                "speech": "In this store, " + modelMedium + " is a reasonably good air filter for " + attribute + " based on customer review and industry data. This model is located at " + shelf + " Would you like to purchase this model?" ,
+                "displayText": "Great, I can help you with that. Do you have any minimum criteria for " + brand + " air filter with " + attribute + "?" ,
+                "source": "apiai-filter-search"
+              };
+
+      res.contentType('application/json');
+      res.send(response);
+    }
+  }
 }
 
 var port = process.env.PORT || 3000;
