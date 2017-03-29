@@ -56,6 +56,10 @@ app.post('/webhook', function (req, res) {
         else if(action == "searchBrandWithQuantitativeAttrNo"){
           searchBrandWithQuantitativeAttrNo(jsonString, req, res);
         } 
+
+        else if(action == "searchBrandWithNonQuantitativeAttr"){
+          searchBrandWithNonQuantitativeAttr(jsonString, req, res);
+        }
         
         // if param is null, send default value as response 
         else if(postParam == null){
