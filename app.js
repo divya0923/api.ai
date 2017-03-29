@@ -243,8 +243,35 @@ var searchBrandWithQuantitativeAttrNo = function(postParam, req, res){
       var shelf = brandData.shelf;
       console.log("modelMedium: " + modelMedium);
       var response = {
-                "speech": "In this store, " + modelMedium + " is a reasonably good air filter for " + attribute + " based on customer review and industry data. This model is located at " + shelf + " Would you like to purchase this model?" ,
+                "speech": "In this store, " + modelMedium + " is a reasonably good air filter for " + attribute + " based on customer review and industry data. This model is located at " + shelf + ". Would you like to purchase this model?" ,
                 "displayText": "Great, I can help you with that. Do you have any minimum criteria for " + brand + " air filter with " + attribute + "?" ,
+                "source": "apiai-filter-search"
+              };
+
+      res.contentType('application/json');
+      res.send(response);
+    }
+  });
+}
+
+var searchBrandWithNonQuantitativeAttr = function(postParam, req, res){
+  console.log("searchBrandWithNonQuantitativeAttr"); 
+  var brand = JSON.parse(postParam).result.parameters.brand;
+  var attribute = JSON.parse(postParam).result.parameters.nonQuantitativeAttr;
+  console.log("attribute :" + attribute + " brand: " + brand);
+  filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err, body) {  
+    if(!err){
+      var brandData = body.rows[0].value; 
+      var filterModels = [];
+      for(i in brandData.filters) { 
+        if(brandData.filters[i][attribute]) {
+          filterModels[i] = brandData.filters[i].name;
+        } 
+      }
+      console.log("Matching filters: " + filterModels.toString());
+      var response = {
+                "speech": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brand.shelf + ". Do you know which one you would like to purchase?" ,
+                "displayText": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brand.shelf + ". Do you know which one you would like to purchase?" ,
                 "source": "apiai-filter-search"
               };
 
