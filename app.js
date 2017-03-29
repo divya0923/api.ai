@@ -260,8 +260,10 @@ var searchBrandWithQuantitativeAttrNo = function(postParam, req, res){
 
 var searchBrandWithNonQuantitativeAttr = function(postParam, req, res){
   console.log("searchBrandWithNonQuantitativeAttr"); 
-  var brand = JSON.parse(postParam).result.parameters.brand;
-  var attribute = JSON.parse(postParam).result.parameters.nonQuantitativeAttr;
+  var brand = JSON.parse(postParam).result.parameters.brand.toLowerCase();
+  var attribute = JSON.parse(postParam).result.parameters.nonQuantitativeAttr.toLowerCase();
+  if(brand == "3m") 
+    brand = "filtrete";
   console.log("attribute :" + attribute + " brand: " + brand);
   filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err, body) {  
     if(!err){
@@ -274,8 +276,8 @@ var searchBrandWithNonQuantitativeAttr = function(postParam, req, res){
       }
       console.log("Matching filters: " + filterModels.toString());
       var response = {
-                "speech": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brand.shelf + ". Do you know which one you would like to purchase?" ,
-                "displayText": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brand.shelf + ". Do you know which one you would like to purchase?" ,
+                "speech": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
+                "displayText": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
                 "source": "apiai-filter-search"
               };
 
