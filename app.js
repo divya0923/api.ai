@@ -315,6 +315,8 @@ var searchBrandWithCriteria = function(postParam, req, res) {
   
   console.log("searchBrandWithCriteria" + "attribute :" + attribute + " brand: " + brand + " num1:" + num1 + " num2:" + num2 + " criteria:" + criteria);
 
+  console.log("flags: " + isLessThan + isGreaterThan + isBetween);
+  
   if(brand == "3m") 
     brand = "filtrete";
 
@@ -323,19 +325,20 @@ var searchBrandWithCriteria = function(postParam, req, res) {
       var brandData = body.rows[0].value; 
       var filterModels = [];
       for(i in brandData.filters) { 
+        console.log("attr value: " + brandData.filters[i][attribute]);
         if(isLessThan) {
           if(brandData.filters[i][attribute] <=  num1) {
-            filterModels[i] = brandData.filters[i].name;
+            filterModels.push(brandData.filters[i].name);
           } 
         }
         else if(isGreaterThan) {
           if(brandData.filters[i][attribute] >=  num1) {
-            filterModels[i] = brandData.filters[i].name;
+            filterModels.push(brandData.filters[i].name);
           } 
         }
         else if(isBetween) {
           if(brandData.filters[i][attribute] <= num1 && brandData.filters[i][attribute] >= num2) {
-            filterModels[i] = brandData.filters[i].name;
+            filterModels.push(brandData.filters[i].name);
           } 
         }
         else {
