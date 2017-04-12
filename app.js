@@ -69,7 +69,11 @@ app.post('/webhook', function (req, res) {
         else if(action == "searchBrandWithCriteria") {
           searchBrandWithCriteria(jsonString, req, res);
         }
-        
+
+        else if(action == "searchBrandWithCriteriaWithoutBrand") {
+          searchBrandWithCriteria(jsonString, req, res);
+        }
+  
         // if param is null, send default value as response 
         else if(postParam == null){
             console.log("post param null, get default filter flow");
@@ -298,7 +302,12 @@ var searchBrandWithNonQuantitativeAttr = function(postParam, req, res){
 
 var searchBrandWithCriteria = function(postParam, req, res) {
   console.log("%o", postParam);
-  var brand = JSON.parse(postParam).result.parameters.brand.toLowerCase();
+  var brand;
+  if(JSON.parse(postParam).result.parameters["brand"] != null)
+    brand = JSON.parse(postParam).result.parameters.brand.toLowerCase();
+  else
+    brand = JSON.parse(postParam).result.contexts[0].parameters.brand;
+  
   var attribute = JSON.parse(postParam).result.parameters.quantitativeAttr.toLowerCase();
   var num1 = JSON.parse(postParam).result.parameters.number[0];
   var num2 = JSON.parse(postParam).result.parameters.number[1];
@@ -323,7 +332,6 @@ var searchBrandWithCriteria = function(postParam, req, res) {
   }
   
   console.log("searchBrandWithCriteria" + "attribute :" + attribute + " brand: " + brand + " num1:" + num1 + " num2:" + num2 + " criteria:" + criteria);
-
   console.log("flags: " + isLessThan + isGreaterThan + isBetween);
 
   if(brand == "3m") 
@@ -348,7 +356,7 @@ var searchBrandWithCriteria = function(postParam, req, res) {
           } 
         }
         else if(isBetween) {
-          if(brandData.filters[i][attribute] <= num1 && brandData.filters[i][attribute] >= num2) {
+          if(brandData.filters[i][attribute] >= num1 && brandData.filters[i][attribute] <= num2) {
             filterModels.push(brandData.filters[i].name);
           } 
         }
