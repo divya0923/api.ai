@@ -312,11 +312,20 @@ var searchBrandWithCriteria = function(postParam, req, res) {
     isGreaterThan = true;
   else if(betweenCriteria.indexOf(criteria) >= 0) 
     isBetween = true;
+  else {
+    response = {
+                "speech": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
+                "displayText": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
+                "source": "apiai-filter-search"
+          };
+    res.contentType('application/json');
+    res.send(response);
+  }
   
   console.log("searchBrandWithCriteria" + "attribute :" + attribute + " brand: " + brand + " num1:" + num1 + " num2:" + num2 + " criteria:" + criteria);
 
   console.log("flags: " + isLessThan + isGreaterThan + isBetween);
-  
+
   if(brand == "3m") 
     brand = "filtrete";
 
@@ -328,11 +337,13 @@ var searchBrandWithCriteria = function(postParam, req, res) {
         console.log("attr value: " + brandData.filters[i][attribute]);
         if(isLessThan) {
           if(brandData.filters[i][attribute] <=  num1) {
+            console.log("less than");
             filterModels.push(brandData.filters[i].name);
           } 
         }
         else if(isGreaterThan) {
           if(brandData.filters[i][attribute] >=  num1) {
+            console.log("less than");
             filterModels.push(brandData.filters[i].name);
           } 
         }
@@ -341,24 +352,17 @@ var searchBrandWithCriteria = function(postParam, req, res) {
             filterModels.push(brandData.filters[i].name);
           } 
         }
-        else {
-          // invalid criteria - show error message 
-          response = {
+      }
+      response = {
                 "speech": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
                 "displayText": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
                 "source": "apiai-filter-search"
-          };
-        }
-        response = {
-                "speech": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
-                "displayText": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
-                "source": "apiai-filter-search"
-        };
-      }
+      };
+      res.contentType('application/json');
+      res.send(response);
     }
   });
-  res.contentType('application/json');
-  res.send(response);
+  
 }
 
 
