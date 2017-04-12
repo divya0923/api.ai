@@ -13,6 +13,11 @@ localStorage = new LocalStorage('./scratch');
 // static files 
 app.use('/static', express.static(__dirname + '/public'));
 
+// arrays for criteria 
+var lessThanCriteria = ["below", "under", "at most", "lower than", "underneath", "beneath", "less than", "smaller than", "maximum"];
+var greaterThanCriteria = ["bigger than", "larger than", "at least", "above", "over", "more than", "higher than", "beyond", "greater than", "minumum"];
+var betweenCriteria = ["in the middle of", "between"];
+
 // handle post request to return filter 
 app.post('/webhook', function (req, res) {
   // read request params from post body
@@ -298,18 +303,57 @@ var searchBrandWithCriteria = function(postParam, req, res) {
   var num1 = JSON.parse(postParam).result.parameters.number[0];
   var num2 = JSON.parse(postParam).result.parameters.number[1];
   var criteria = JSON.parse(postParam).result.parameters.criteria;
+  var isLessThan = false, isGreaterThan = false, isBetween = false;
+  var response;
+
+  if(lessThanCriteria.indexOf(criteria) >= 0)
+    isLessThan = true;
+  else if(greaterThanCriteria.indexOf(criteria) >= 0)
+    isGreaterThan = true;
+  else if(betweenCriteria.indexOf(criteria) >= 0) 
+    isBetween = true;
   
   console.log("searchBrandWithCriteria" + "attribute :" + attribute + " brand: " + brand + " num1:" + num1 + " num2:" + num2 + " criteria:" + criteria);
 
   if(brand == "3m") 
     brand = "filtrete";
 
-  var response = {
-                "speech": "searchBrandWithCriteria" ,
-                "displayText": "searchBrandWithCriteria" ,
+  filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err, body) { 
+    if(!err){
+      var brandData = body.rows[0].value; 
+      var filterModels = [];
+      for(i in brandData.filters) { 
+        if(isLessThan) {
+          if(brandData.filters[i][attribute] <=  num1) {
+            filterModels[i] = brandData.filters[i].name;
+          } 
+        }
+        else if(isGreaterThan) {
+          if(brandData.filters[i][attribute] >=  num1) {
+            filterModels[i] = brandData.filters[i].name;
+          } 
+        }
+        else if(isBetween) {
+          if(brandData.filters[i][attribute] <= num1 && brandData.filters[i][attribute] >= num2) {
+            filterModels[i] = brandData.filters[i].name;
+          } 
+        }
+        else {
+          // invalid criteria - show error message 
+          response = {
+                "speech": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
+                "displayText": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
                 "source": "apiai-filter-search"
-              };
-
+          };
+        }
+        response = {
+                "speech": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
+                "displayText": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
+                "source": "apiai-filter-search"
+        };
+      }
+    }
+  });
   res.contentType('application/json');
   res.send(response);
 }
