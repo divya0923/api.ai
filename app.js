@@ -60,6 +60,10 @@ app.post('/webhook', function (req, res) {
         else if(action == "searchBrandWithNonQuantitativeAttr"){
           searchBrandWithNonQuantitativeAttr(jsonString, req, res);
         }
+
+        else if(action == "searchBrandWithCriteria") {
+          searchBrandWithCriteria(jsonString, req, res);
+        }
         
         // if param is null, send default value as response 
         else if(postParam == null){
@@ -170,7 +174,7 @@ app.post('/webhook', function (req, res) {
   }
 });
 
-var searchBranchWithoutAttr = function(postParam, req, res){
+var searchBranchWithoutAttr = function(postParam, req, res) {
   console.log("searchBranchWithoutAttr");
   var brand = JSON.parse(postParam).result.parameters.brand;
   var response = "";
@@ -204,8 +208,8 @@ var searchBranchWithoutAttr = function(postParam, req, res){
     
   });
 };
-
-var searchBrandWithoutAttrNo = function(postParam, req, res){
+ 
+var searchBrandWithoutAttrNo = function(postParam, req, res) {
   console.log("searchBrandWithoutAttrNo");
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand;
   var response = {
@@ -218,7 +222,7 @@ var searchBrandWithoutAttrNo = function(postParam, req, res){
   res.send(response);
 }
 
-var searchBrandWithQuantitativeAttr = function(postParam, req, res){
+var searchBrandWithQuantitativeAttr = function(postParam, req, res) {
   console.log("searchBrandWithQuantitativeAttr");
   var brand = JSON.parse(postParam).result.parameters.brand;
   var attribute = JSON.parse(postParam).result.parameters.quantitativeAttr;
@@ -232,7 +236,7 @@ var searchBrandWithQuantitativeAttr = function(postParam, req, res){
   res.send(response);
 }
 
-var searchBrandWithQuantitativeAttrNo = function(postParam, req, res){
+var searchBrandWithQuantitativeAttrNo = function(postParam, req, res) {
   console.log("searchBrandWithQuantitativeAttrNo");
   var attribute = JSON.parse(postParam).result.contexts[0].parameters.quantitativeAttr.toLowerCase();
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand.toLowerCase();
@@ -286,6 +290,180 @@ var searchBrandWithNonQuantitativeAttr = function(postParam, req, res){
     }
   });
 }
+
+var searchBrandWithCriteria = function(postParam, req, res) {
+  console.log("%o", postParam);
+  var brand = JSON.parse(postParam).result.parameters.brand.toLowerCase();
+  var attribute = JSON.parse(postParam).result.parameters.quantitativeAttr.toLowerCase();
+  var num1 = JSON.parse(postParam).result.parameters.number[0];
+  var num2 = JSON.parse(postParam).result.parameters.number[1];
+  var criteria = JSON.parse(postParam).result.parameters.criteria;
+  
+  console.log("searchBrandWithCriteria" + "attribute :" + attribute + " brand: " + brand + " num1:" + num1 + " num2:" + num2 + " criteria:" + criteria);
+
+  if(brand == "3m") 
+    brand = "filtrete";
+
+  var response = {
+                "speech": "searchBrandWithCriteria" ,
+                "displayText": "searchBrandWithCriteria" ,
+                "source": "apiai-filter-search"
+              };
+
+  res.contentType('application/json');
+  res.send(response);
+}
+
+
+/************************** MySQL Webhook **************************/
+
+app.post('/webhookMySql', function (req, res) { 
+// read request params from post body
+  var action = null;
+  var postParam = null;
+  var brand = null, any = null;
+  var contextName = null;
+  var response = null;
+  if (req.method == 'POST') {
+      var jsonString = '';
+
+      req.on('data', function (data) {
+          jsonString += data;
+      });
+
+      req.on('end', function () {
+        action = JSON.parse(jsonString).result.action;
+        console.log("action :" + action);
+        postParam = JSON.parse(jsonString).result.parameters.filterAttributes;
+        brand = JSON.parse(jsonString).result.parameters.brand;
+        any = JSON.parse(jsonString).result.parameters.any;
+        contextName = JSON.parse(jsonString).result.contexts[0].name;
+        console.log("postParam: " + postParam + "name :" + contextName);
+
+        if(action == "searchBrandWithoutAttr") {
+          searchBranchWithoutAttr_MySql(jsonString, req, res);
+        }
+
+        else if(action == "searchBrandWithoutAttrNo"){
+          searchBrandWithoutAttrNo(jsonString, req, res);
+        }
+
+        else if(action == "searchBrandWithQuantitativeAttr"){
+          searchBrandWithQuantitativeAttr(jsonString, req, res);
+        }
+
+        else if(action == "searchBrandWithQuantitativeAttrNo"){
+          searchBrandWithQuantitativeAttrNo_MySql(jsonString, req, res);
+        } 
+
+        else if(action == "searchBrandWithNonQuantitativeAttr"){
+          searchBrandWithNonQuantitativeAttr_MySql(jsonString, req, res);
+        }
+      });
+    }
+});
+
+var searchBranchWithoutAttr_MySql = function(postParam, req, res) {
+  console.log("searchBranchWithoutAttr");
+  var brand = JSON.parse(postParam).result.parameters.brand;
+  var response = "";
+  console.log("brand :" + brand);
+  
+  //TODO change this to MySql
+  filter.view('searchFilterDesign', 'searchBrandView', function(err, body) {   
+    if (!err) {
+        var brandRows = body.rows;
+        for(var i = 0; i < brandRows.length; i++ ) { 
+          console.log("brand in loop :" + brandRows[i].value.name);
+          console.log(brandRows[i].value.name.toLowerCase() == brand.toLowerCase());
+          if(brandRows[i].value.name.toLowerCase() == brand.toLowerCase()){
+            response =  {
+                "speech": "Great, I can help you with that. We have multiple " + brandRows[i].value.displayName + " filters in this store, located at " +  brandRows[i].value.shelf + ". Would you like to make a purchase?" ,
+                "displayText": "Brand matching the query is " + brandRows[i].value.name,
+                "source": "apiai-filter-search"
+              };
+          }
+        }
+
+        if(response == ""){
+          response = { 
+                "speech": "I'm sorry. I did not recognize what you said. Would you like to make a purchase?" ,
+                "displayText": "Unrecognizable Input", 
+                "source" :  "apiai-filter-search"
+            }; 
+        }
+      }
+    
+      res.contentType('application/json');
+      res.send(response); 
+    
+  });
+  // End
+
+};
+
+var searchBrandWithQuantitativeAttrNo_MySql = function(postParam, req, res) {
+  console.log("searchBrandWithQuantitativeAttrNo");
+  var attribute = JSON.parse(postParam).result.contexts[0].parameters.quantitativeAttr.toLowerCase();
+  var brand = JSON.parse(postParam).result.contexts[0].parameters.brand.toLowerCase();
+  if(brand == "3m") 
+    brand = "filtrete";
+  console.log("attribute :" + attribute + " brand: " + brand);
+
+  // TODO change this to MySql
+  filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err, body) {  
+    if(!err){
+      var brandData = body.rows[0].value;
+      var modelMedium = brandData.model_medium[attribute];
+      var shelf = brandData.shelf;
+      console.log("modelMedium: " + modelMedium);
+      var response = {
+                "speech": "In this store, " + modelMedium + " is a reasonably good air filter for " + attribute + " based on customer review and industry data. This model is located at " + shelf + ". Would you like to purchase this model?" ,
+                "displayText": "Great, I can help you with that. Do you have any minimum criteria for " + brand + " air filter with " + attribute + "?" ,
+                "source": "apiai-filter-search"
+              };
+
+      res.contentType('application/json');
+      res.send(response);
+    }
+  });
+  // End
+
+}
+
+var searchBrandWithNonQuantitativeAttr_MySql = function(postParam, req, res){
+  console.log("searchBrandWithNonQuantitativeAttr"); 
+  var brand = JSON.parse(postParam).result.parameters.brand.toLowerCase();
+  var attribute = JSON.parse(postParam).result.parameters.nonQuantitativeAttr.toLowerCase();
+  if(brand == "3m") 
+    brand = "filtrete";
+  console.log("attribute :" + attribute + " brand: " + brand);
+
+  // TODO change this to MySql
+  filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err, body) {  
+    if(!err){
+      var brandData = body.rows[0].value; 
+      var filterModels = [];
+      for(i in brandData.filters) { 
+        if(brandData.filters[i][attribute]) {
+          filterModels[i] = brandData.filters[i].name;
+        } 
+      }
+      console.log("Matching filters: " + filterModels.toString());
+      var response = {
+                "speech": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
+                "displayText": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
+                "source": "apiai-filter-search"
+              };
+
+      res.contentType('application/json');
+      res.send(response);
+    }
+  });
+  //END
+
+}
+
 
 var port = process.env.PORT || 3000;
 app.listen(port, function () {
