@@ -239,7 +239,8 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
   console.log("searchBrandWithoutAttrNo2");
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand;
   console.log("brand: " + brand);
-  
+  if(brand == "3m") 
+    brand = "filtrete";
   filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {   
     if (!err) {
       var agentRecAttr = body.rows[0].value[0];
