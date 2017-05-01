@@ -169,8 +169,9 @@ app.post('/webhook', function (req, res) {
                 "source": "apiai-filter-search"
               };
             else
+              // TODO - fix this error message
               response =  {
-                "speech": "I am sorry. We dont have any products that match your description. Can you please describe it in another way?",
+                "speech": "I am sorry. I did not recognize what you said. Can you please describe it in another way?",
                 "displayText": "Filter not found",
                 "source": "apiai-filter-search"
               };
