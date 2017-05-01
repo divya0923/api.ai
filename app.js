@@ -249,7 +249,7 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
         if(!err1){
           var brandData = body1.rows[0].value;
           console.log("brandData %o", brandData);
-          var modelMedium = brandData.model_medium[agentRecAttr.name];
+          var modelMedium = brandData.model_medium[agentRecAttr.name.toLowerCase()];
           var shelf = brandData.shelf;
           console.log("modelMedium: " + modelMedium);
           var response = {
