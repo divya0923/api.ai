@@ -54,6 +54,10 @@ app.post('/webhook', function (req, res) {
           searchBrandWithoutAttrNo(jsonString, req, res);
         }
 
+        else if(action == "searchBrandWithoutAttrNo2"){
+          searchBrandWithoutAttrNo2(jsonString, req, res);
+        }
+
         else if(action == "searchBrandWithQuantitativeAttr"){
           searchBrandWithQuantitativeAttr(jsonString, req, res);
         }
@@ -229,6 +233,35 @@ var searchBrandWithoutAttrNo = function(postParam, req, res) {
 
   res.contentType('application/json');
   res.send(response);
+}
+
+var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
+  console.log("searchBrandWithoutAttrNo2");
+  var brand = JSON.parse(postParam).result.contexts[0].parameters.brand;
+  console.log("brand: " + brand);
+  
+  filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {   
+    if (!err) {
+      var agentRecAttr = body.rows[0].value[0];
+      console.log("agentRecAttr %o" , agentRecAttr);
+      filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err, body) {  
+        if(!err){
+          var brandData = body.rows[0].value;
+          var modelMedium = brandData.model_medium[agentRecAttr.name];
+          var shelf = brandData.shelf;
+          console.log("modelMedium: " + modelMedium);
+          var response = {
+                    "speech": "Okay. Other customers have felt that " +  agentRecAttr.displayName +" is one of the most important things when considering a " + brand + " air filter. "  + agentRecAttr.desc + " In this store, " + modelMedium + " is a reasonably good air filter for " + agentRecAttr.displayName + " based on customer review and industry data. This model is located at " + shelf + ". Would you like to purchase this model?" ,
+                    "displayText": "Great, I can help you with that. Do you have any minimum criteria for " + brand + " air filter with " + attribute + "?" ,
+                    "source": "apiai-filter-search"
+                  };
+
+          res.contentType('application/json');
+          res.send(response);
+        }
+      });
+    }
+  });
 }
 
 var searchBrandWithQuantitativeAttr = function(postParam, req, res) {
