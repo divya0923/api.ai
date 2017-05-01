@@ -358,7 +358,7 @@ var searchBrandWithCriteria = function(postParam, req, res) {
     isBetween = true;
   else {
     response = {
-                "speech": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
+                "speech": "I'm sorry. There are no models in this store that match your criteria. Do you have any other criteria for " + brand " air filters?" ,
                 "displayText": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
                 "source": "apiai-filter-search"
           };
@@ -396,11 +396,21 @@ var searchBrandWithCriteria = function(postParam, req, res) {
           } 
         }
       }
-      response = {
+      if(filterModels.length == 0) {
+        response = {
+                "speech": "I'm sorry. There are no models in this store that match your criteria. Do you have any other criteria for " + brand " air filters?" ,
+                "displayText": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
+                "source": "apiai-filter-search"
+        };
+      }
+      else {
+        response = {
                 "speech": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
                 "displayText": "Great, I can help you with that. In this store, " + filterModels.toString() + " meet(s) your criteria for " + attribute + " based on customer review and industry data. This model is located at " + brandData.shelf + ". Do you know which one you would like to purchase?" ,
                 "source": "apiai-filter-search"
-      };
+        };
+      }
+      
       res.contentType('application/json');
       res.send(response);
     }
