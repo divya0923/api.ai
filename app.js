@@ -358,7 +358,7 @@ var searchBrandWithCriteria = function(postParam, req, res) {
     isBetween = true;
   else {
     response = {
-                "speech": "I'm sorry. There are no models in this store that match your criteria. Do you have any other criteria for " + brand " air filters?" ,
+                "speech": "I'm sorry. There are no models in this store that match your criteria. Do you have any other criteria for " + brand + " air filters?" ,
                 "displayText": "I'm sorry. We don't have any products that match your description. Can you describe it in another way?" ,
                 "source": "apiai-filter-search"
           };
