@@ -6,8 +6,8 @@ var mysql = require('mysql');
 //with connection
 var connection = mysql.createConnection({
   host     : 'hxr.cise.ufl.edu',
-  user     : 'kiana',
-  password : '',
+  user     : 'ecdillon',
+  password : '*C62D39F4470FDA5F68D68D93D57261862BBEB539',
   database : 'MODA'
 });
 
