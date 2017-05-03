@@ -1,6 +1,24 @@
 // express conf
 var express = require('express');
 var app = express();
+var mysql = require('mysql');
+
+//with connection
+var connection = mysql.createConnection({
+  host     : 'localhost',
+  user     : 'kiana',
+  password : '',
+  database : 'MODA'
+});
+
+
+connection.connect(function(err){
+    if (err) {
+      console.log(err)
+    } else {
+      console.log("Successfully connected to mysql");
+    }
+});
 
 // nano conf 
 var nano = require('nano')('https://couchdb-c0e747.smileupps.com/');
@@ -40,6 +58,8 @@ app.post('/webhook', function (req, res) {
         brand = JSON.parse(jsonString).result.parameters.brand;
         any = JSON.parse(jsonString).result.parameters.any;
         contextName = JSON.parse(jsonString).result.contexts[0].name;
+        
+        // TODO - fix this log 
         console.log("postParam: " + postParam + "name :" + contextName);
 
         /*if(brand != null || any != null){
@@ -78,6 +98,7 @@ app.post('/webhook', function (req, res) {
           searchBrandWithCriteria(jsonString, req, res);
         }
   
+        // TODO - change else to actions 
         // if param is null, send default value as response 
         else if(postParam == null){
             console.log("post param null, get default filter flow");
@@ -88,10 +109,12 @@ app.post('/webhook', function (req, res) {
                 // get attribute rating from the response
                 var attributes = body.rows[0].value;
 
+                // read the previous priority 
                 var prevContext = localStorage.getItem("prevContext");
                 console.log("prevContext" + prevContext);
                 // read priority from local storage
                 var priority = localStorage.getItem("filterPriority");
+                
                 if(prevContext == contextName){
                    priority = parseInt(priority) + 1;
                 }
