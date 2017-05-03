@@ -5,12 +5,11 @@ var mysql = require('mysql');
 
 //with connection
 var connection = mysql.createConnection({
-  host     : 'localhost',
+  host     : 'hxr.cise.ufl.edu',
   user     : 'kiana',
   password : '',
   database : 'MODA'
 });
-
 
 connection.connect(function(err){
     if (err) {
