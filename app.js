@@ -217,6 +217,7 @@ app.post('/webhook', function (req, res) {
 var searchFilterWithAttribute = function(postParam, req, res) {
   console.log("searchFilterWithAttribute");
   var attribute = JSON.parse(postParam).result.parameters.filterAttributes;
+  var contextName = JSON.parse(postParam).result.contexts[0].name;
   console.log("attribute for search filter: " + attribute);
   filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
     if (!err) { 
