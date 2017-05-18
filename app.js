@@ -446,15 +446,24 @@ var handleUnknownInput = function(postParam,req, res) {
   console.log("handleUnknownInput");
   var contextName = JSON.parse(postParam).result.contexts[0].name;
   console.log("contextName :" + contextName);
-  var response;
-  if (contextName == "search-filter-with-attribute" || contextName == "search-filter-without-attribute") {
-    response = {
-      "speech":  "I'm sorry. I did not recognize what you said. Would you like to make a purchase?", 
-      "displayText" : "I'm sorry. I did not recognize what you said. Would you like to make a purchase?", 
-      "source": "apiai-filter-search"
-    };
+  var response = { "source": "apiai-filter-search" };
+  var speechText;
+ 
+  if (contextName == "search-filter-with-attribute") {
+    speechText = "I'm sorry. I did not recognize what you said. Would you like to make a purchase?";
   }
 
+  else if (contextName == "search-filter-without-attribute") {
+    if(JSON.parse(postParam).result.contexts[1]) {
+      if(JSON.parse(postParam).result.contexts[1].name == "search-filter-without-attribute-step1")
+        speechText = "I am sorry. I did not recognize what you said. Can you please describe it in another way?"; 
+    }
+    else
+      speechText = "I'm sorry. I did not recognize what you said. Would you like to make a purchase?";
+  }
+
+  response.speech = speechText;
+  response.displayText = speechText;
   res.contentType('application/json');
   res.send(response);
 }
