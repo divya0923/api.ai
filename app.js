@@ -62,7 +62,7 @@ app.post('/webhook', function (req, res) {
           searchFilterWithAttribute(jsonString, req, res);
         }
 
-        else if(action == "searchFilterWithoutAttr") {
+        else if(action == "searchFilterWithoutAttr_No") {
           searchFilterWithoutAttribute(jsonString, req, res);
         }
 
@@ -447,7 +447,7 @@ var handleUnknownInput = function(postParam,req, res) {
   var contextName = JSON.parse(postParam).result.contexts[0].name;
   console.log("contextName :" + contextName);
   var response;
-  if (contextName == "search-filter-with-attribute") {
+  if (contextName == "search-filter-with-attribute" || contextName == "search-filter-without-attribute") {
     response = {
       "speech":  "I'm sorry. I did not recognize what you said. Would you like to make a purchase?", 
       "displayText" : "I'm sorry. I did not recognize what you said. Would you like to make a purchase?", 
