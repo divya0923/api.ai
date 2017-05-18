@@ -97,6 +97,10 @@ app.post('/webhook', function (req, res) {
         else if(action == "searchBrandWithCriteriaWithoutBrand") {
           searchBrandWithCriteria(jsonString, req, res);
         }  
+
+        else if(action == "input.unknown") {
+          handleUnknownInput(jsonString, req, res);
+        }
     });
   }
 });
@@ -438,6 +442,23 @@ var searchBrandWithCriteria = function(postParam, req, res) {
   
 }
 
+var handleUnknownInput = function(postParam,req, res) {
+  console.log("handleUnknownInput");
+  var contextName = JSON.parse(postParam).result.contexts[0].name;
+  console.log("contextName :" + contextName);
+  var response;
+  if (contextName == "search-filter-with-attribute") {
+    response = {
+      "speech":  "I'm sorry. I did not recognize what you said. Would you like to make a purchase?", 
+      "displayText" : "I'm sorry. I did not recognize what you said. Would you like to make a purchase?", 
+      "source": "apiai-filter-search"
+    };
+  }
+
+  res.contentType('application/json');
+  res.send(response);
+}
+
 
 /************************** MySQL Webhook **************************/
 
@@ -585,7 +606,6 @@ var searchBrandWithNonQuantitativeAttr_MySql = function(postParam, req, res){
     }
   });
   //END
-
 }
 
 
