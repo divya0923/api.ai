@@ -59,11 +59,15 @@ app.post('/webhook', function (req, res) {
         contextName = JSON.parse(jsonString).result.contexts[0].name;
         
         // TODO - fix this log 
-        console.log("postParam: " + postParam + "name :" + contextName);
+        //console.log("postParam: " + postParam + "name :" + contextName);
 
         /*if(brand != null || any != null){
            gotoSatFlow(jsonString, req, res);
         }*/
+
+        if(action == "filterSearchWithAttribute") {
+          searchFilterWithAttribute(jsonString, req, res);
+        }
 
         if(action == "searchBrandWithoutAttr") {
           searchBranchWithoutAttr(jsonString, req, res);
@@ -209,6 +213,44 @@ app.post('/webhook', function (req, res) {
     });
   }
 });
+
+var searchFilterWithAttribute = function(postParam, req, res) {
+  console.log("searchFilterWithAttribute");
+  var attribute = JSON.parse(jsonString).result.parameters.filterAttributes;
+  console.log("attribute for search filter: " + attribute);
+  filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
+    if (!err) { 
+      // get the array of filters from response
+      var filterRows = body.rows;
+      // sort rows based on the request param
+      filterRows.sort(function(a, b) {
+        return parseFloat(a.value[attribute]) - parseFloat(b.value[attribute]);
+      });
+
+      console.log("matching filter model:" +filterRows[0].value.filterModel);
+      
+      if(filterRows[0].value.hasOwnProperty(attribute))           
+        response =  {
+          "speech": "Great, I can help you with that. In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + attribute + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?" ,
+          "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
+          "source": "apiai-filter-search"
+        };
+      else
+        // TODO - fix this error message
+        response =  {
+          "speech": "I am sorry. I did not recognize what you said. Can you please describe it in another way?",
+          "displayText": "Filter not found",
+          "source": "apiai-filter-search"
+        };
+
+      localStorage.setItem("prevContext", contextName);
+
+      // post response
+      res.contentType('application/json');
+      res.send(response); 
+    }
+  });
+}
 
 var searchBranchWithoutAttr = function(postParam, req, res) {
   console.log("searchBranchWithoutAttr");
