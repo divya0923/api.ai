@@ -65,31 +65,35 @@ app.post('/webhook', function (req, res) {
            gotoSatFlow(jsonString, req, res);
         }*/
 
-        if(action == "filterSearchWithAttribute") {
+        if(action == "searchFilterWithAttr") {
           searchFilterWithAttribute(jsonString, req, res);
         }
 
-        if(action == "searchBrandWithoutAttr") {
+        else if(action == "searchFilterWithoutAttr") {
+          searchFilterWithoutAttribute(jsonString, req, res);
+        }
+
+        else if(action == "searchBrandWithoutAttr") {
           searchBranchWithoutAttr(jsonString, req, res);
         }
 
-        else if(action == "searchBrandWithoutAttrNo"){
+        else if(action == "searchBrandWithoutAttrNo") {
           searchBrandWithoutAttrNo(jsonString, req, res);
         }
 
-        else if(action == "searchBrandWithoutAttrNo2"){
+        else if(action == "searchBrandWithoutAttrNo2") {
           searchBrandWithoutAttrNo2(jsonString, req, res);
         }
 
-        else if(action == "searchBrandWithQuantitativeAttr"){
+        else if(action == "searchBrandWithQuantitativeAttr") {
           searchBrandWithQuantitativeAttr(jsonString, req, res);
         }
 
-        else if(action == "searchBrandWithQuantitativeAttrNo"){
+        else if(action == "searchBrandWithQuantitativeAttrNo") {
           searchBrandWithQuantitativeAttrNo(jsonString, req, res);
         } 
 
-        else if(action == "searchBrandWithNonQuantitativeAttr"){
+        else if(action == "searchBrandWithNonQuantitativeAttr") {
           searchBrandWithNonQuantitativeAttr(jsonString, req, res);
         }
 
@@ -251,6 +255,73 @@ var searchFilterWithAttribute = function(postParam, req, res) {
       res.send(response); 
     }
   });
+}
+
+var searchFilterWithoutAttribute = function(postParam, req, res) {
+    console.log("searchFilterWithoutAttribut");
+    var contextName = JSON.parse(postParam).result.contexts[0].name;
+    filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {   
+      if (!err) {
+
+        // get attribute rating from the response
+        var attributes = body.rows[0].value;
+
+        // read the previous priority 
+        var prevContext = localStorage.getItem("prevContext");
+        console.log("prevContext" + prevContext);
+        // read priority from local storage
+        var priority = localStorage.getItem("filterPriority");
+        
+        if(prevContext == contextName){
+           priority = parseInt(priority) + 1;
+        }
+        else {
+          priority = 0;
+        }
+
+        if(priority > body.rows[0].value.length - 1 || priority < 0){
+          console.log("invalid value for priority, defaulting it to 1");
+          priority = 0;
+        }
+
+        localStorage.setItem("filterPriority", priority);
+
+        console.log("priority" + priority);
+
+        // sort based on the attribute priority 
+        attributes.sort(function(a, b) { 
+          return parseFloat(a.priority) - parseFloat(b.priority);
+        });
+
+        console.log("attribute with highest priority: " +attributes[priority].name);
+        
+        filter.view('searchFilterDesign', 'searchFilterView', function(err, body) {
+          if (!err) { 
+            // get the array of filters from response
+            var filterRows = body.rows;
+            
+            // sort rows based on the request param
+            filterRows.sort(function(a, b) {
+              return parseFloat(a.value[attributes[priority].name]) - parseFloat(b.value[attributes[priority].name]);
+            });
+
+            console.log("matching filter model:" +filterRows[0].value.filterModel);
+            
+            // construct response object
+            response =  {
+              "speech": "Okay, other customers have felt that " + attributes[priority].displayName + " is one of the important things to consider when buying an air filter. " + attributes[priority].desc + " In this store, " + filterRows[0].value.filterModel + " is the best air filter for " + attributes[priority].displayName + " based on customer review and industry data. Would you like to purchase " + filterRows[0].value.filterModel +"?",
+              "displayText": "Filter matching your query is " + filterRows[0].value.filterModel,
+              "source": "apiai-filter-search"
+            };
+
+            localStorage.setItem("prevContext", contextName);
+            // post response
+            res.contentType('application/json');
+            res.send(response); 
+          }
+        });
+      }
+    });
 }
 
 var searchBranchWithoutAttr = function(postParam, req, res) {
