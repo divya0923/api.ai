@@ -4,7 +4,7 @@ var app = express();
 var mysql = require('mysql');
 
 //with connection
-var connection = mysql.createConnection({
+/* var connection = mysql.createConnection({
   host     : 'hxr.cise.ufl.edu',
   user     : 'ecdillon',
   password : '*C62D39F4470FDA5F68D68D93D57261862BBEB539',
@@ -17,7 +17,7 @@ connection.connect(function(err){
     } else {
       console.log("Successfully connected to mysql");
     }
-});
+}); */
 
 // nano conf 
 var nano = require('nano')('https://couchdb-c0e747.smileupps.com/');
