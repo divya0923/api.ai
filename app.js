@@ -270,6 +270,8 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
 
     // read priority from local storage
     var rating = localStorage.getItem("agentRecAttrRating");
+    console.log("rating " + rating);
+    console.log("rating " + body.rows[0].value.length - 1);
     if(rating == null || parseInt(rating) > body.rows[0].value.length - 1 || parseInt(rating) < 0){
           console.log("invalid value for priority, defaulting it to 1");
           rating = 0;
