@@ -106,6 +106,8 @@ app.post('/webhook', function (req, res) {
 });
 
 var searchFilterWithAttribute = function(postParam, req, res) {
+
+  resetLocalStorage();
   console.log("searchFilterWithAttribute");
   var attribute = JSON.parse(postParam).result.parameters.filterAttributes;
   var contextName = JSON.parse(postParam).result.contexts[0].name;
@@ -212,6 +214,7 @@ var searchFilterWithoutAttribute = function(postParam, req, res) {
 }
 
 var searchBranchWithoutAttr = function(postParam, req, res) {
+  resetLocalStorage();
   console.log("searchBranchWithoutAttr");
   var brand = JSON.parse(postParam).result.parameters.brand;
   var response = "";
@@ -247,6 +250,7 @@ var searchBranchWithoutAttr = function(postParam, req, res) {
 };
  
 var searchBrandWithoutAttrNo = function(postParam, req, res) {
+  resetLocalStorage();
   console.log("searchBrandWithoutAttrNo");
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand;
   var response = {
@@ -305,6 +309,7 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
 }
 
 var searchBrandWithQuantitativeAttr = function(postParam, req, res) {
+  resetLocalStorage();
   console.log("searchBrandWithQuantitativeAttr");
   var brand = JSON.parse(postParam).result.parameters.brand;
   var attribute = JSON.parse(postParam).result.parameters.quantitativeAttr;
@@ -319,6 +324,7 @@ var searchBrandWithQuantitativeAttr = function(postParam, req, res) {
 }
 
 var searchBrandWithQuantitativeAttrNo = function(postParam, req, res) {
+  resetLocalStorage();
   console.log("searchBrandWithQuantitativeAttrNo");
   var attribute = JSON.parse(postParam).result.contexts[0].parameters.quantitativeAttr.toLowerCase();
   var brand = JSON.parse(postParam).result.contexts[0].parameters.brand.toLowerCase();
@@ -345,6 +351,7 @@ var searchBrandWithQuantitativeAttrNo = function(postParam, req, res) {
 }
 
 var searchBrandWithNonQuantitativeAttr = function(postParam, req, res){
+  resetLocalStorage();
   console.log("searchBrandWithNonQuantitativeAttr"); 
   var brand = JSON.parse(postParam).result.parameters.brand.toLowerCase();
   var attribute = JSON.parse(postParam).result.parameters.nonQuantitativeAttr.toLowerCase();
@@ -374,6 +381,7 @@ var searchBrandWithNonQuantitativeAttr = function(postParam, req, res){
 }
 
 var searchBrandWithCriteria = function(postParam, req, res) {
+  resetLocalStorage();
   console.log("%o", postParam);
   var brand;
   if(JSON.parse(postParam).result.parameters["brand"] != null)
@@ -457,6 +465,7 @@ var searchBrandWithCriteria = function(postParam, req, res) {
 }
 
 var handleUnknownInput = function(postParam,req, res) {
+  resetLocalStorage();
   console.log("handleUnknownInput");
   var contextName = JSON.parse(postParam).result.contexts[0].name;
   console.log("contextName :" + contextName);
@@ -480,6 +489,11 @@ var handleUnknownInput = function(postParam,req, res) {
   response.displayText = speechText;
   res.contentType('application/json');
   res.send(response);
+}
+
+var resetLocalStorage() {
+  localStorage.setItem("agentRecAttrRating", 0);
+  localStorage.setItem("filterPriority", 0);
 }
 
 
