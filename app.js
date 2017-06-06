@@ -276,7 +276,8 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
     }
  
     if (!err) {
-      var agentRecAttr = body.rows[0].value[Integer.parseInt(rating) + 1];
+      rating = Integer.parseInt(rating) + 1;
+      var agentRecAttr = body.rows[0].value[rating];
       localStorage.setItem("agentRecAttrRating", rating);
       
       console.log("agentRecAttr %o" , agentRecAttr);
