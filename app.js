@@ -271,7 +271,7 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
     // read priority from local storage
     var rating = localStorage.getItem("agentRecAttrRating");
     console.log("rating " + rating);
-    console.log("rating " + body.rows[0].value.length - 1);
+    
     if(rating == null || parseInt(rating) > body.rows[0].value.length - 1 || parseInt(rating) < 0){
           console.log("invalid value for priority, defaulting it to 1");
           rating = 0;
@@ -280,7 +280,7 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
     if (!err) {
       //rating = parseInt(rating) + 1;
       var agentRecAttr = body.rows[0].value[parseInt(rating)];
-      localStorage.setItem("agentRecAttrRating", rating + 1);
+      localStorage.setItem("agentRecAttrRating", parseInt(rating) + 1);
       
       console.log("agentRecAttr %o" , agentRecAttr);
       filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err1, body1) {  
