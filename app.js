@@ -265,9 +265,20 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
   console.log("brand: " + brand);
   if(brand == "3m") 
     brand = "filtrete";
-  filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {   
+
+  filter.view('searchFilterDesign', 'attributesRatingView', function(err, body) {  
+
+    // read priority from local storage
+    var rating = localStorage.getItem("agentRecAttrRating");
+    if(rating == null || Integer.parseInt(rating) > body.rows[0].value.length - 1 || Integer.parseInt(rating) < 0){
+          console.log("invalid value for priority, defaulting it to 1");
+          rating = 0;
+    }
+ 
     if (!err) {
-      var agentRecAttr = body.rows[0].value[0];
+      var agentRecAttr = body.rows[0].value[Integer.parseInt(rating) + 1];
+      localStorage.setItem("agentRecAttrRating", rating);
+      
       console.log("agentRecAttr %o" , agentRecAttr);
       filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err1, body1) {  
         if(!err1){
