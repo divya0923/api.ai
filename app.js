@@ -276,9 +276,9 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
     }
  
     if (!err) {
-      rating = parseInt(rating) + 1;
-      var agentRecAttr = body.rows[0].value[rating];
-      localStorage.setItem("agentRecAttrRating", rating);
+      //rating = parseInt(rating) + 1;
+      var agentRecAttr = body.rows[0].value[parseInt(rating)];
+      localStorage.setItem("agentRecAttrRating", rating + 1);
       
       console.log("agentRecAttr %o" , agentRecAttr);
       filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err1, body1) {  
