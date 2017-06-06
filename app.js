@@ -284,10 +284,10 @@ var searchBrandWithoutAttrNo2 = function(postParam, req, res) {
       filter.view('searchFilterDesign', 'searchBrandWithAttrView', { key: brand }, function(err1, body1) {  
         if(!err1){
           var brandData = body1.rows[0].value;
-          console.log("brandData %o", brandData);
+          //console.log("brandData %o", brandData);
           var modelMedium = brandData.model_medium[agentRecAttr.name.toLowerCase()];
           var shelf = brandData.shelf;
-          console.log("modelMedium: " + modelMedium);
+          //console.log("modelMedium: " + modelMedium);
           var response = {
                     "speech": "Okay. Other customers have felt that " +  agentRecAttr.displayName +" is one of the most important things when considering a " + brand + " air filter. "  + agentRecAttr.desc + " In this store, " + modelMedium + " is a reasonably good air filter for " + agentRecAttr.displayName + " based on customer review and industry data. This model is located at " + shelf + ". Would you like to purchase this model?" ,
                     "displayText": "Great, I can help you with that. Do you have any minimum criteria for " + brand + " air filter with " + agentRecAttr.name + "?" ,
