@@ -491,7 +491,7 @@ var handleUnknownInput = function(postParam,req, res) {
   res.send(response);
 }
 
-var resetLocalStorage() {
+var resetLocalStorage = function() {
   localStorage.setItem("agentRecAttrRating", 0);
   localStorage.setItem("filterPriority", 0);
 }
